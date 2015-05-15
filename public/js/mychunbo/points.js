@@ -6,7 +6,6 @@ $(function(){
 				li += '<li>'+ data.pointsList[i].remark +'</li>'
 			}
 			$('.paginating ul').html(li);
-			console.log(data);
 		});
 	});
 
@@ -27,7 +26,6 @@ $(function(){
 			}
 			$('.points_table tr:gt(0)').remove();
 			$('.points_table tr').after(tr);
-			console.log(tr);
 		});
 	})
 });

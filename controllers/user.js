@@ -12,7 +12,6 @@ function User(){
 	*/
 	this.getPoints = function(req, res, next){
 		var tasks = [];
-		var asd = req.query.split('/');
 		tasks.push(function(callback){
 			request
 				.get(config.API_USER + 'gets/member_id/59')
@@ -59,9 +58,24 @@ function User(){
 			});
 	};
 
+	/* 我的春播券
+	*
+	*/
 	this.getCoupons = function(req, res, next){
-
+		res.render('../views/mychunbo/coupons.html',{
+			title: '我的春播券',
+			public: config.PUBLIC
+		});
 	};
+	/* 我的春播卡
+	*
+	*/
+	this.getGiftcards = function(req, res, next){
+		res.render('../views/mychunbo/giftcards.html',{
+			title: '我的春播卡',
+			public: config.PUBLIC
+		});
+	}
 }
 
 module.exports = user;

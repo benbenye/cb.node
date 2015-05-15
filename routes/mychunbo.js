@@ -16,4 +16,7 @@ router.get('/points/page', req.checkAjax, auth.checkLogin, user.pagePoints);
 /* 我的春播券 */
 router.get('/coupons', auth.checkLogin, user.getCoupons);
 
+/* 我的春播卡 */
+router.get('/giftcards', auth.checkLogin, user.getGiftcards);
+
 module.exports = router;
