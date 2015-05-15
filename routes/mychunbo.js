@@ -11,6 +11,9 @@ var router = express.Router();
 router.get('/points', auth.checkLogin, user.getPoints);
 
 /* 我的积分 积分明细|收入积分|支出积分|积分分页 */
-router.get('/points/page', req.checkAjax, auth.checkLogin, user.handlePoints);
+router.get('/points/page', req.checkAjax, auth.checkLogin, user.pagePoints);
+
+/* 我的春播券 */
+router.get('/coupons', auth.checkLogin, user.getCoupons);
 
 module.exports = router;
