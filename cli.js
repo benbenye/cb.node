@@ -12,7 +12,7 @@ var fs = require('fs'),
     colors = require('colors'),
     cliff = require('cliff'),
     flatiron = require('flatiron'),
-    forever = require('../forever');
+    forever = require('./forever');
 
 var cli = exports;
 

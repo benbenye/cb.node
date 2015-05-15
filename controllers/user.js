@@ -7,7 +7,7 @@ var async = require('async');
 
 function User(){
 	this.getPoints = function(req, res, next){
-
+console.log(req.headers);
 		var tasks = [];
 		tasks.push(function(callback){
 			request
@@ -37,8 +37,9 @@ function User(){
 		});
 	};
 	this.handlePoints = function(req, res, next){
-		var params = req.params;
-		var _url = 'member_id/' + params.id + '/type/' + params.type + '/page/' + params.page + '/page_size/10';
+		var query = req.query;
+		var _url = 'member_id/' + query.member_id + '/type/' + query.type + '/page/' + query.page + '/page_size/10';
+		console.log(_url);
 		request
 			.get(config.API_USER + 'gets/'+_url)
 			.end(function(err, data){
