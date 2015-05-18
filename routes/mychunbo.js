@@ -19,4 +19,13 @@ router.get('/coupons', auth.checkLogin, user.getCoupons);
 /* 我的春播卡 */
 router.get('/giftcards', auth.checkLogin, user.getGiftcards);
 
+/* 账户安全 */
+router.get('/security', auth.checkLogin, user.getSecurity);
+
+/* 我的余额 */
+router.get('/balance', auth.checkLogin, user.getBalance);
+
+/* 分享基金 */
+router.get('/invitation', auth.checkLogin, user.getInvitation);
+
 module.exports = router;

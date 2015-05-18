@@ -9,20 +9,40 @@
 		<div class="points_show">
 			<div class="tab_wrap">
 				<ul class="tab">
-					<li class="on first"><a href="/coupons/index/type/5.html">春播券</a></li>
+					<li class="on first"><a href="/mychunbo/coupons">春播券</a></li>
 					<li><a href="/coupons/index/type/3.html">已使用的春播券</a></li>
 					<li><a href="/coupons/index/type/4.html">已过期的春播券</a></li>
 				</ul>
 			</div>
 			<table class="points_table tab_content">
-				<tbody><tr style="border-bottom:none;">
-					<th width="15%">编号</th>
-					<th width="10%">面值</th>
-					<th width="20%">状态</th>
-					<th width="30%">有效期</th>
-					<th width="21%">来源</th>
-				</tr>
-								</tbody></table>
+				<tbody>
+					<tr style="border-bottom:none;">
+						<th width="15%">编号</th>
+						<th width="10%">面值</th>
+						<th width="20%">状态</th>
+						<th width="30%">有效期</th>
+						<th width="21%">来源</th>
+					</tr>
+					{% for item in couponsLists %}
+						<tr>
+							<td>{{ item.coupons_id }}</td>
+							<td>{{ item.coupons_name }}</td>
+							<td>
+							 {{ 
+							"未激活" if item.is_enable == 1 
+							else ("已激活，未使用" if item.is_enable == 2 
+							else ("已使用" if item.is_enable == 3 
+							else "过期"
+							 ))
+							  }}
+							</td>
+							<td>{{ item.coupons_end_time }}</td>
+							<td>{{ item.source }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			{% if count > 10 %}
 			<div class="paginating"></div>
 		<div class="how_to_use">
 			<h3 class="how_to_title">如何使用</h3>

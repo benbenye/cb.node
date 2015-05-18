@@ -1,0 +1,55 @@
+{% extends "../layout.html" %}
+{% block main %}
+<link rel="stylesheet" href="http://static.chunboimg.com/css/my_chunbo.css">
+<div class="wrap clearfix">
+	{% include "./nav.html" %}
+	<div class="content my_account">
+				<h2 class="title">我的余额</h2>
+				<p class="subtitle">可用余额：¥{{ balance|string if balance else "0.00" }}</p>
+				<div class="points_show">
+					<div class="tab_wrap">
+						<ul class="tab">
+							<li class="on first"><a href="/mychunbo/balance">余额明细</a></li>
+							<li><a href="/balance/index/type/1.html">收入</a></li>
+							<li><a href="/balance/index/type/2.html">支出</a></li>
+						</ul>
+					</div>
+					<table class="points_table tab_content">
+						<tbody>
+							<tr style="border-bottom:none;">
+								<th width="20%">日期</th>
+								<th width="30%">收入/支出</th>
+								<th width="50%" style="text-align:left;">详细说明</th>
+							</tr>
+							{% for item in balanceList %}
+								<tr>
+									<td>{{ item.creation_date }}</td>
+									<td>{{ item.change_type_desc }}</td>
+									<td style="text-align:left;">{{ item.change_desc }}</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+					<div class="paginating">
+						                 </div>
+				</div>
+				<div class="how_to_use">
+					<h3 class="how_to_title">如何使用</h3>
+					<ul class="how_to_list">
+						<li>
+							<p class="list_title">
+								1、选择您要购买的商品，添加购物车，去结算。
+							</p>
+							<img src="http://static.chunboimg.com/images/how_to_1.jpg" alt="">
+						</li>
+						<li>
+							<p class="list_title">
+								2、订单结算时，在春播会员优惠区域，输入您想使用的余额金额，点击使用即可。
+							</p>
+							<img src="http://static.chunboimg.com/images/how_to_2.jpg" alt="">
+						</li>
+					</ul>
+				</div>
+			</div>
+</div>
+{% endblock %}
