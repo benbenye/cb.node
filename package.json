@@ -18,6 +18,8 @@
     "forever-monitor": "^1.5.2",
     "gulp": "^3.8.11",
     "jade": "~1.9.2",
+    "log4js": "^0.6.25",
+    "mkdirp": "^0.5.1",
     "morgan": "~1.5.1",
     "nconf": "^0.7.1",
     "nssocket": "^0.5.3",

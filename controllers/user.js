@@ -1,9 +1,12 @@
 var user = new User();
 var path = require('path')
 var request = require('superagent');
+var logger = require('./log');
 var prefix = require('superagent-prefix')('/static');
 var config = require('../config');
 var async = require('async');
+
+
 
 function User(){
 	/* 我的积分，获取积分明细和积分个数
@@ -16,6 +19,7 @@ function User(){
 			request
 				.get(config.API_USER + 'Points/gets/member_id/59')
 				.end(function(err, data){
+					if(data.flag !== 1) logger.warn(data.res.body);
 					callback(err, data);
 				});
 		});
@@ -29,7 +33,12 @@ function User(){
 
 		async.parallel(tasks,function(err, result){
 			if(err){
-				debug(err.message);
+				logger.error('服务器异常');
+				res.status(500);
+				res.render('../views/error.html',{
+					title:'服务器异常',
+					public: config.PUBLIC
+				});
 			}
 			res.render('../views/mychunbo/points.html',{
 				data:result[0].res.body,
@@ -56,6 +65,7 @@ function User(){
 		request
 			.get(config.API_USER + 'Points/gets/'+_url)
 			.end(function(err, data){
+				console.log(data);
 				res.send({
 					pointsList:data.res.body.points_list
 				});
@@ -76,7 +86,12 @@ function User(){
 		});
 		async.parallel(tasks, function(err, result){
 			if(err){
-
+				logger.error('服务器异常');
+				res.status(500);
+				res.render('../views/error.html',{
+					title:'服务器异常',
+					public: config.PUBLIC
+				});
 			}
 			res.render('../views/mychunbo/coupons.html',{
 				title: '我的春播券',
@@ -130,6 +145,14 @@ function User(){
 		});
 
 		async.parallel(tasks,function(err, result){
+			if(err){
+				logger.error('服务器异常');
+				res.status(500);
+				res.render('../views/error.html',{
+					title:'服务器异常',
+					public: config.PUBLIC
+				});
+			}
 			res.render('../views/mychunbo/balance.html',{
 				title: '我的余额',
 				balanceList: result[0].res.body.list,
