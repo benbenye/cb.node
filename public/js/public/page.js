@@ -21,7 +21,7 @@
 		var _this = this;
 		_this.pagesObj.on('click', 'a', function(){
 			_this.data.page = $(this).data('page');
-			_this.index = $(this).siblings('a').index();
+			_this.index = $(this).index();
 			if(!$(this).hasClass('cur')) _this.ajax();
 		});
 	};
