@@ -17,7 +17,7 @@ function User(){
 		var tasks = [];
 		tasks.push(function(callback){
 			request
-				.get(config.API_USER + 'Points/gets/member_id/59')
+				.get(config.API_USER + 'Points/gets/member_id/59/page_size/2')
 				.end(function(err, data){
 					if(data.flag !== 1) logger.warn(data.res.body);
 					callback(err, data);
@@ -43,7 +43,7 @@ function User(){
 			res.render('../views/mychunbo/points.html',{
 				data:result[0].res.body,
 				pointsTotal:result[1].res.body.pointsTotal,
-				pages:Math.ceil(result[0].res.body.count/10),
+				pages:Math.ceil(result[0].res.body.count/2),
 				title: '我的积分',
 				pageSize: config.PAGE_SIZE,
 				public: config.PUBLIC
@@ -61,14 +61,16 @@ function User(){
 	*/
 	this.pagePoints = function(req, res, next){
 		var query = req.query;
-		var _url = 'member_id/' + query.member_id + '/type/' + query.type + '/page/' + query.page + '/page_size/10';
+		var _url = 'member_id/' + query.member_id + '/type/' + query.type + '/page/' + query.page + '/page_size/2';
 		request
 			.get(config.API_USER + 'Points/gets/'+_url)
 			.end(function(err, data){
-				console.log(data);
-				res.send({
-					pointsList:data.res.body.points_list
-				});
+				if(data.res.body){
+					res.send({
+						pointsList:data.res.body.points_list
+					});
+				}
+			
 			});
 	};
 
