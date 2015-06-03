@@ -9,6 +9,31 @@ var async = require('async');
 
 
 function User(){
+
+	this.login = function(req, res, next){
+		var username = req.body.username,
+				password = req.body.password,
+				_url = 'member/login/username/'+username+'/password/'+password;
+		request
+			.get(config.API_USER + _url)
+			.end(function(err, data){
+				var resData = JSON.parse(data.res.text);
+				if(resData.flag == 1){
+					console.log(req.session);
+					req.session.user = resData;
+					res.cookie(data.res.headers['set-cookie']);
+					res.cookie('is_reg_info', '1', { expires: new Date(Date.now() + 900000)});
+
+					// res.render('index.html',{
+					// 	title:'首页',
+					// 	public: config.PUBLIC,
+					// 	userInfo: resData.member_info
+					// });
+					res.redirect('/');
+				}
+			
+			});
+	};
 	/* 我的积分，获取积分明细和积分个数
 	* 【API格式】获取积分列表  Points/gets/member_id/59
 	* 【API格式】获取积分个数  Points/getPointsTotal/member_id/59
@@ -17,9 +42,9 @@ function User(){
 		var tasks = [];
 		tasks.push(function(callback){
 			request
-				.get(config.API_USER + 'Points/gets/member_id/59/page_size/2')
+				.get(config.API_USER + 'Points/gets/member_id/59')
 				.end(function(err, data){
-					if(data.flag !== 1) logger.warn(data.res.body);
+					if(data.res.body.flag !== 1) logger.warn(data.res.body);
 					callback(err, data);
 				});
 		});
@@ -43,7 +68,7 @@ function User(){
 			res.render('../views/mychunbo/points.html',{
 				data:result[0].res.body,
 				pointsTotal:result[1].res.body.pointsTotal,
-				pages:Math.ceil(result[0].res.body.count/2),
+				pages:Math.ceil(result[0].res.body.count/10),
 				title: '我的积分',
 				pageSize: config.PAGE_SIZE,
 				public: config.PUBLIC
@@ -61,7 +86,7 @@ function User(){
 	*/
 	this.pagePoints = function(req, res, next){
 		var query = req.query;
-		var _url = 'member_id/' + query.member_id + '/type/' + query.type + '/page/' + query.page + '/page_size/2';
+		var _url = 'member_id/' + query.member_id + '/type/' + query.type + '/page/' + query.page + '/page_size/'+config.PAGE_SIZE;
 		request
 			.get(config.API_USER + 'Points/gets/'+_url)
 			.end(function(err, data){

@@ -1,0 +1,58 @@
+{% extends "../layout.html" %}
+{% block main %}
+<link rel="stylesheet" href="css/style.css">
+<style>
+	.app-bg{background-image: url(images/app-grid.png); background-repeat: repeat;}
+	.app-main{width: 1080px; height: 600px; margin-bottom: 105px; margin-left: auto; margin-right: auto; position: relative;}
+	.app-main .app-phone{position: absolute; top: 35px;}
+	.app-main .app-chunbo-title{margin-top: 120px; margin-bottom: 80px;}
+	.app-main .app-infor{margin-left: 550px;}
+	.app-main .app-qr-box{padding-left: 15px; position: relative;}
+	.app-main .app-qr-box .app-download-btn{display: block; width: 240px; height: 63px; border-radius: 2px; color: #fff; line-height: 63px; background-repeat: no-repeat; font-size: 24px;}
+	.app-main .app-qr-box .app-download-btn.for-ios{background-color: #2bbc69; margin-bottom: 40px; background-image: url(images/app-ios.png);}
+	.app-main .app-qr-box .app-download-btn.for-android{background-color: #f67c57; background-image: url(images/app-android.png);}
+	.app-main .app-qr-box .app-download-btn.for-ios:hover{background-color: #54c987}
+	.app-main .app-qr-box .app-download-btn.for-android:hover{background-color: #f68866}
+	.app-main .app-qr-box .app-qr-img{position: absolute; left: 300px; top: 0;  background-image: url(images/app-qr-jiantou.png); background-repeat: no-repeat; background-position: 16px 186px;}
+	.app-main .app-qr-box .app-qr-img img{ width: 180px; height: 180px;}
+	.app-main .app-qr-box .app-qr-img p{text-indent: 55px; font-size: 12px; color: #808c9a;}
+	.app-intro-list{width: 1080px; margin-left: auto; margin-right: auto; margin-bottom: 50px;}
+	.app-intro-list .app-intro-li{display: inline-block; *display: inline; *zoom: 1; width: 330px; padding: 14px; border-top: 1px solid #ededed; border-right: 1px solid #ededed; border-bottom: 1px solid #ededed; text-align: center;}
+	.app-intro-list .app-intro-li:first-child{border-left: 1px solid #ededed;}
+	.app-intro-list .app-intro-li h5{font-size: 22px; margin-top: 20px; margin-bottom: 10px;}
+	.app-intro-list .app-intro-li p{font-size: 14px; margin-bottom: 15px; color: #808c9a;}
+</style>
+<div class="app-bg">
+	<div class="app-main">
+		<img class="app-phone" src="images/app-phone.png" alt="手机春播">
+		<div class="app-infor">
+			<img class="app-chunbo-title" src="images/app-chunbo-title.png" alt="手机春播-安心健康食品的网络首选">
+			<div class="app-qr-box">
+				<a class="app-download-btn for-ios" href=""></a>
+				<a class="app-download-btn for-android" href=""></a>
+				<div class="app-qr-img">
+					<img src="" alt="春播app二维码">
+					<p>扫扫即可下载</p>
+					<p>手机春播</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<ul class="app-intro-list">
+	<li class="app-intro-li">
+		<img src="images/app-intro-li1.png" alt="倡导安心健康的美食生活">
+		<h5>倡导安心健康的美食生活</h5>
+		<p>不靠农药，只靠汗水，关爱自己、家人和地球</p>
+	</li><li class="app-intro-li">
+		<img src="images/app-intro-li2.png" alt="全面升级您的餐桌安全">
+		<h5>全面升级您的餐桌安全</h5>
+		<p>每份商品独立批次检测 全程冷链保证新鲜</p>
+	</li><li class="app-intro-li">
+		<img src="images/app-intro-li3.png" alt="春播大厨奉上全能菜谱">
+		<h5>春播大厨奉上全能菜谱</h5>
+		<p>幸福的秘方是吃到家的味道</p>
+	</li>
+</ul>
+{% endblock %}

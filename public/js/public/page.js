@@ -8,7 +8,7 @@
 			member_id : 59,
 			type: 3,
 			page: 0,
-			page_size: 2
+			page_size: 10
 		};
 
 		_this.pagesObj = $(obj) || $('.paginating .page_list');
@@ -22,6 +22,7 @@
 		_this.pagesObj.on('click', 'a', function(){
 			_this.data.page = $(this).data('page');
 			_this.index = $(this).index();
+			if($(this).siblings('i') && $(this).siblings('i').hasClass('front')) _this.index-=1;
 			if(!$(this).hasClass('cur')) _this.ajax();
 		});
 	};
@@ -31,19 +32,18 @@
 				_a = '';
 		// prePageNextPage();
 		if(_this.maxPage > 10 && Math.abs(_this.data.page - _this.curPage) > 5){
-			_a += '<i>…</i>';
+			_a += '<i class="front">…</i>';
 			for(var i = 4; i >= 1 && _this.data.page - i >= 1; --i){
-				_a += '<a data-page="'+(_this.data.page - i)+'">'+(_this.data.page - i)+'</a>';
+				_a += '<a style="cursor:pointer" data-page="'+(_this.data.page - i)+'">'+(_this.data.page - i)+'</a>';
 			}
-			_a += '<a class="cur">'+_this.data.page+'</a>';
+			_a += '<a class="cur" data-page="'+_this.data.page+'">'+_this.data.page+'</a>';
 			for(i = 1; i <= 4 && _this.data.page + i <= _this.maxPage; ++i){
-				_a += '<a data-page="'+(_this.data.page + i)+'">'+(_this.data.page + i)+'</a>';
+				_a += '<a style="cursor:pointer" data-page="'+(_this.data.page + i)+'">'+(_this.data.page + i)+'</a>';
 			}
-			_a += '<i>…</i>';
+			_a += '<i class="end">…</i>';
 			_this.pagesObj.html(_a);
 		}else{
 			_this.pagesObj.children('a').removeClass('cur');
-			console.log('ss');
 			_this.pagesObj.children('a').eq(_this.index).addClass('cur');
 		}
 		_this.curPage = _this.data.page;
@@ -62,11 +62,22 @@
 				}
 				_this.trObj.first().siblings().remove();
 				_this.trObj.first().after(_tr);
-				window.scrollTo(0,0);
+				// window.scrollTo(0,0);
 				_this.renderPage();
 			}
 		}	);
 	};
+
+	Page.prototype.nextPage = function(){
+		var _this = this;
+		_this.data.page += 1;
+		_this.ajax();
+	}
+	Page.prototype.prePage = function(){
+		var _this = this;
+		_this.data.page -= 1;
+		_this.ajax();
+	}
 	// Page.prototype.handleResponse = function(data){
 	// 	var _tr = '',
 	// 			_this = this;

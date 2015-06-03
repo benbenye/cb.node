@@ -6,7 +6,7 @@ var request = require('superagent');
 var path = require('path');
 var prefix = require('superagent-prefix')('/static');
 var router = express.Router();
-
+	
 /* 我的积分 首页 */
 router.get('/points', auth.checkLogin, user.getPoints);
 

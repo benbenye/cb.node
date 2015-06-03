@@ -120,8 +120,14 @@
                 </div>
                 <div class="header_message clearfix">
                     <div class="header_login">
-                        <a href="/member/index.html" class="green_a" id="login_user_name">yejing</a>&nbsp;&nbsp;
-                                            </div>
+
+                        {% if userInfo.flag %}
+                           <a href="/member/index.html" class="green_a" id="login_user_name">{{ userInfo.nickname }}</a>
+                        {% else %}
+                          <a href="/Login/regMobile.html" class="green_a" id="red" onclick="return showLogin(this);">注册</a><span>|</span>                            <a href="/Login/index.html" class="green_a" id="login" onclick="return showLogin(this);">登录</a><span>|</span>
+                        {% endif %}
+                    </div>
+
                     <div class="header_myhome">
                         <a href="/member/index.html" class="myhome_a">我的春播<span></span></a>
                                                 <div class="myhome_slide" style="display: none;">

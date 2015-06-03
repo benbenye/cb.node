@@ -1,9 +1,13 @@
 var express = require('express');
+var session = require('express-session');
 var path = require('path');
+var config = require('./config');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongodb = require('mongodb');
+var connect = require('connect');
 var nunjucks = require('nunjucks');
 
 var routes = require('./routes/index');
@@ -30,11 +34,21 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+app.use(session({
+  secret: 'keyboard cat',
+  cookie: { maxAge: 60000 },
+  resave: true,
+  saveUninitialized: true,
+  store: new connect({
+    url: config.DB+'/session',
+    collection : 'cbsession'
+  })
+}))
 app.use('/', routes);
 // app.use('/users', users);
 app.use('/mychunbo', mychunbo);
 app.use('/product', product);
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
