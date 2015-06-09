@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>{{ title }}</title>
+	<link rel="stylesheet" href="{{ public }}css/style.css">
+	{% include './public/head.html' %}
+</head>
+<body>
+	{% include './public/header.html' %}
+	{% block main %}
+
+	{% endblock %}
+	{% include './public/footer.html' %}
+</body>
+</html>

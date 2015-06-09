@@ -1,0 +1,37 @@
+{% extends "../layout.html" %}
+{% block main %}
+<link rel="stylesheet" href="http://static.chunboimg.com/css/my_chunbo.css">
+<div class="wrap clearfix">
+	{% include "./nav.html" %}
+	<div class="content referal_progress">
+	            <div class="banner">
+	                <ul class="bannerIcon">
+	                    <li class="text-left">分享给朋友</li>
+	                    <li>朋友注册并使用红包</li>
+	                    <li class="text-right">获取返现</li>
+	                </ul>
+	            </div>
+	            
+	            <h2 class="planHeader"><small>使用分享基金卡</small></h2>
+	            <div class="promotion" style="padding-bottom:0;height:74px;">
+
+	                <div class="share_card"><a href="" class="confirm_btn" onclick="return showBind();">我有分享基金卡</a><a href="http://www.chunbo.com/HelpCenter/index/content_id/61" class="rules_link" target="_blank">如何获得分享基金卡？</a></div>
+	                <div class="input_infor card_error"></div>
+	            </div>
+	            <input type="hidden" name="" id="inviteAmount" value="10">
+	            <input type="hidden" name="" id="inviteType" value="2">
+	            <div class="purchase_detail">
+	                <h3 class="purchase_title">我的返现明细</h3>
+	                <div class="purchase_infor clearfix">
+	                    <ul class="purchase_block" id="InviteComplet">
+	                        <li class="first">已赚取<span>¥0</span>余额<span>¥0</span>春播券</li>
+	                                            </ul>
+	                    <ul class="purchase_block" style="float:right;" id="isInvite">
+	                        <li class="first">赚取中<span>¥0</span>余额<span>¥0</span>春播券</li>
+	                                            </ul>
+	                </div>
+	                
+	            </div>
+	        </div>
+</div>
+{% endblock %}

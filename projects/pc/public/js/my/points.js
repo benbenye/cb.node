@@ -1,6 +1,6 @@
 $(function(){
 	$('.paginating').on('click','#getNextPage', function(){
-		$.getJSON('/mychunbo/points/59/3/3/10',function(data){
+		$.getJSON('/my/points/59/3/3/10',function(data){
 			var li = '';
 			for(var i = 0, l = data.pointsList.length; i < l; ++i){
 				li += '<li>'+ data.pointsList[i].remark +'</li>'
@@ -15,7 +15,7 @@ $(function(){
 				page = $(this).data('page'),
 				type = 3,
 				page_size = 10,
-				getJsonUrl = '/mychunbo/points/page?member_id='+ member_id + '&type=' + type + '&page=' + page + '&page_size=' + page_size;
+				getJsonUrl = '/my/points/page?member_id='+ member_id + '&type=' + type + '&page=' + page + '&page_size=' + page_size;
 
 		$.getJSON(getJsonUrl, function(data){
 			var tr = '';

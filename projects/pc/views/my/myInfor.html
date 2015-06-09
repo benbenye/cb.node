@@ -1,0 +1,71 @@
+{% extends "../layout.html" %}
+{% block main %}
+<link rel="stylesheet" href="http://static.chunboimg.com/css/my_chunbo.css">
+<div class="wrap clearfix">
+{% include "./nav.html" %}
+<div class="content profile">
+	<h2 class="title">个人信息</h2>
+	<div class="profile_detail clearfix">
+		<div class="left">
+			<span class="photo"><img src="http://i2.chunboimg.com/{{ userInfo.avatar_url|replace('.jpg','_120_120.jpg',1) }}" alt="{{ userInfo.nickname }}" id="member_img_new"></span>
+			<p class="upload_btn_line"><span class="upload_btn">上传头像<input type="button" id="uploadeAvatar"></span></p>
+		</div>
+        <div class="right">
+            <ul class="profile_list">
+                <li class="clearfix">
+                    <div class="li_left">昵称</div>
+                    <div class="li_right">
+                        <input type="text" class="input_text" value="{{ userInfo.nickname }}" name="{{ userInfo.nickname }}" id="nickname">
+                    </div>
+                </li>
+                <li class="clearfix">
+                    <div class="li_left">性别</div>
+                    <div class="li_right">
+                        <span class="radio_wrap"><i class="radio selectSex{{ ' radio_cur' if (userInfo.gender==2) else '' }}" name="2"></i>女</span>
+                        <span class="radio_wrap"><i class="radio selectSex{{ ' radio_cur' if (userInfo.gender==1) else '' }}" name="1"></i>男</span>
+                        <span class="radio_wrap"><i class="radio selectSex{{ ' radio_cur' if (userInfo.gender==3) else '' }}" name="3"></i>保密</span>
+                    </div> 
+                <li class="clearfix" style="position:relative;z-index:4;">
+                    <div class="li_left">生日</div>
+                    <div class="li_right">
+                        <div class="clearfix select_box">
+                            <span class="text select_box_list"><font id="birth_year">{{ userInfo.birthday | splitBirthday('-',0) }}</font><span><i></i></span></span>
+                            <div class="privilege_slide" style="display: none;" flag="0">
+                               <ul id="birthdayYear"></ul>
+                            </div>
+                        </div>
+                        <span class="words">年</span>
+                        <div class="clearfix select_box">
+                            <span class="text select_box_list"><font id="birth_month">{{ userInfo.birthday | splitBirthday('-',1) | int() |string() |replace('0', '请选择',1) }}</font><span><i></i></span></span>
+                            <div class="privilege_slide" style="display: none;" flag="0">
+                                <ul id="birthdayMonth"></ul>
+                            </div>
+                        </div>
+                        <span class="words">月</span>
+                        <div class="clearfix select_box" id="birthdayDay_1">
+                            <span class="text select_box_list"><font id="birth_day">{{ userInfo.birthday | splitBirthday('-',2) | int() |string() |replace('0', '请选择',1) }}</font><span><i></i></span></span>
+                            <div class="privilege_slide" style="display: none;" flag="0">
+                               <ul id="birthdayDay"></ul>
+                            </div>
+                        </div>
+                        <span class="words">日</span>
+                    </div>
+                </li>
+                <li class="clearfix">
+                    <div class="li_left">真实姓名</div>
+                    <div class="li_right">
+                        <input type="text" class="input_text" value="{{ userInfo.truename }}" name="{{ userInfo.truename }}" id="truename">
+                    </div>
+                </li>
+                <li class="clearfix">
+                    <input type="hidden" value="http://img.chunbo.com/" id="fdfs_prefix">
+                    <input type="hidden" value="" id="img_url_120">
+                    <a href="javascript:;" class="confirm_btn updateUserInfo">保存</a>
+                    <!--<a href="javascritp:;" class="gray_btn">取消</a>-->
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+    </div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "../layout.html" %}
+{% block main %}
+<link rel="stylesheet" href="http://static.chunboimg.com/css/my_chunbo.css">
+<div class="wrap clearfix">
+	{% include "./nav.html" %}
+	<div class="content my_account">
+		<h2 class="title">{{ title }} <a href="/coupons/bind.html" class="border_btn" id="BindCoupons">绑定新的春播卡</a></h2>
+		<div class="points_show">
+						<div class="tab_wrap">
+						</div>
+						<table class="points_table tab_content" style="display: table;">
+							<tbody>
+								<tr style="border-bottom:none;">
+								<th width="20%">编号</th>
+								<th width="10%">面值</th>
+								<th width="10%">余额</th>
+								<th width="13%">状态</th>
+								<th width="20%">有效期</th>
+								<th width="13%">来源</th>
+								<th>操作</th>
+							</tr>
+							</tbody>
+						</table>
+						<div class="paginating"></div>
+		</div>
+		<div class="how_to_use">
+			<h3 class="how_to_title">如何使用</h3>
+			<ul class="how_to_list">
+				<li>
+					<p class="list_title">
+						1、选择您要购买的商品，添加购物车，去结算。
+					</p>
+					<img src="http://static.chunboimg.com/images/how_to_1.jpg" alt="">
+				</li>
+				<li>
+					<p class="list_title">
+						2、订单结算时，在春播会员优惠区域，输入您想使用的春播卡余额金额，点击使用即可。
+					</p>
+					<img src="http://static.chunboimg.com/images/how_to_3.jpg" alt="" style="margin-left:-7px;">
+				</li>
+			</ul>
+		</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

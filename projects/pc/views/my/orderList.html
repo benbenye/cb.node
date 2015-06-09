@@ -1,0 +1,133 @@
+
+    <div class="order_show">
+      <div class="tab_wrap">
+        <ul class="tab-list-show">
+          <li class="on first"><a href="/OrderInfo/index.html">我的订单</a></li>
+          <li><a href="/OrderInfo/index/status/1.html">待付款（{{ orderCount.noArchiveCount if orderCount.noArchiveCount else '0' }}）</a></li>
+          <li><a href="/OrderInfo/index/status/2.html">待发货（{{ orderCount.noDeliveryCount if orderCount.noDeliveryCount else '0' }}）</a></li>
+          <li><a href="/OrderInfo/index/status/3.html">待收货（{{ orderCount.archiveCount if orderCount.archiveCount else '0' }}）</a></li>
+          <li><a href="/OrderInfo/index/status/4.html">待评价（{{ orderCount.reviewCount if orderCount.reviewCount else '0' }}）</a></li>
+        </ul>
+        {% if isIndex %}
+        <a href="/my/order" class="check_all">查看全部订单 》</a>
+        {% endif %}
+      </div>
+      <div class="tab_content" style="display: block;">
+        {% for item in orderList %}
+        <div class="order_item">
+          <h3 class="title">
+            <span>下单时间：{{ item.orderDate | splitBirthday() }}</span>
+            <span>总价：¥{{ item.payMoney }}</span>
+            {% set addr =  ([item.provinceName, item.cityName, item.countyName, item.custAddress] | join('')) %}
+            <span>送至：{{ addr | subDoubleByte(24.5) }}</span>
+            <span class="right">订单号：{{ item.orderId }}</span>
+          </h3>
+          {% for i in item.orderDetailList %}
+          <div class="status">
+            <p class="status_title wait_to_send">
+              {% if (item.orderStatus == 1) -%}
+                {% if (item.isPause == 1) %}
+                  <span class="fr">订单取消中</span>
+                {% else %}
+                  <span class="fr">待付款</span>
+                {% endif %}
+              {% elif (item.orderStatus == 2) %}
+                待发货
+              {% elif (item.orderStatus == 3) %}
+                待收货
+              {% elif (item.orderStatus == 4) %}
+                {% if (item.rpflag == 1) %}
+                  已完成
+                {% else %}
+                  待评价
+                {% endif %}
+              {% elif (item.orderStatus == 5) %}
+                已取消
+              {% elif (item.orderStatus == 6) %}
+                配送失败
+              {% elif (item.orderStatus == 7) %}
+                已评价
+              {%- endif %}
+            </p>
+            {% if (item.orderStatus == 1 or item.orderStatus == 2 or item.orderStatus == 3) %}
+              {% if (item.isPause == 0 and item.orderStatus == 1) %}
+              <a href="javascript:void(0);" onclick="toPayBtn(this);" class="wait_pay_button toPay" value="{{ item.orderId }}">去付款</a>
+              {% endif %}
+              <p class="status_time">预计送达时间：{{ item.bookDate }}</p>
+            {% endif %}
+              <div class="check_status">
+                {% if(item.orderStatus == 1 and item.isPause == 0) %}
+                  <a href="{:U('OrderInfo/delOrder',array('order_id'=>$OrderVo['orderId']))}"
+                     class="delOrder" onclick="return showDialog(this);">
+                      取消订单
+                  </a>
+                  <!-- 删除确认框 -->
+                  <span class="pop_box">
+                      <span class="msg">你确定要继续吗？</span>
+                      <span class="pop_box_btns"><a href="" class="pop-cancue">取消</a><a href="{:U('OrderInfo/delOrder',array('order_id'=>$OrderVo['orderId']))}" class="btn_yes" onclick="return delOrder(this)">确定</a></span>
+                      <span class="sj_icon"></span>
+                  </span>
+                {% elif (item.orderStatus == 2 or item.orderStatus == 4) %}
+                  <a href="{:U('Member/getLogitics',array('order_id'=>$OrderVo['orderId']))}" class="getLogitics">查看物流</a>|
+                {% elif (item.orderStatus == 3) %}
+                  <a href="{:U('OrderInfo/finishOrder',array('order_id'=>$OrderVo['orderId']))}" onclick="return finishOrder(this)">确认收货</a>
+                  |
+                  <a href="{:U('Member/getLogitics',array('order_id'=>$OrderVo['orderId']))}" class="getLogitics">
+                      查看物流
+                  </a>|
+                {% endif %}
+                <a href="/OrderInfo/info/order_id/101977419.html">订单详情</a>
+              </div>
+            <div class="logistics_infor loading-m" style="display: none;">
+              <p class="loading-txt">加载中，请稍后…</p>
+            </div>
+          </div>
+          <ul class="item clearfix">
+            <li class="item_pic">
+              <a href="/product/{{ i.product_id }}.html" target="_blank">
+                <img src='http://i2.chunboimg.com/{{ i.url | replace(".jpg", "_120_120.jpg", 1) }}' alt="{{ i.name }}">
+              </a>
+            </li>
+            <li class="item_infor">
+              <p class="item_title">{{ i.name }}</p>
+                <p class="item_name">
+                  <a href="/product/{{ i.product_id }}.html" target="_blank">{{ i.subname }}</a>
+                </p>
+            </li>
+            <li class="item_num">×{{ i.skuNum }}</li>
+            <li class="item_price">¥{{ i.salePrice*i.skuNum }}</li>
+            {% if (i.has_lot == 1 and item.orderStatus == 3 or item.orderStatus == 4 or item.orderStatus == 7) %}
+            <li class="item_trace">
+              <a href="/OrderInfo/getInspection/skuId/1001374/skuLot/20150521.html" onclick="return getInspection(this)">
+                  追踪检测情况
+              </a>
+            </li>
+            {% endif %}
+            <li class="item_trace show_goods">
+              <div class="comment_pop_wrap">
+                {% if (i.is_review and item.orderStatus == 4 or item.orderStatus == 7) %}
+                  <a href="javascript:{void(0);}" data-order-id="101977419" data-product-id="7845" class="green_a show_my_review">已晒单评价</a>
+                <div id="review_pop_1019774197845" class="comment_msg_box_top clearfix" style="display: none;" data-is-get="yes">
+                  <a href="" class="close_me"></a>
+                  <div class="no_pic">
+                    <div class="comment_msg_box_xx"><img alt="" src="/Public/images/mychunbo/xl_2.png">很清甜，椰肉太难弄了，后来都扔了</div>
+                    <div class="comment_msg_box_time">
+                        <!--<a href=""><i></i></a>-->
+                        <span>2015-05-28</span>
+                    </div>
+                  </div>
+                  <span class="trigon_icon"><span></span></span>
+                </div>
+                {% else %}
+                <a href="" class="Review" data-review="">晒单评价 赚积分</a>
+                {% endif %}
+                
+                <a href="javascript:void(0);" onclick="add_cart_fly($(this),'http://i3.chunboimg.com/group1/M00/01/8A/Cv4IdVVcMIGAVHfaAAaquNOHJyk135_120_120.jpg',7845,1,1001374,0)" class="border_btn">再次购买</a>
+              </div>
+            </li>
+          </ul>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>

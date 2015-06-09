@@ -1,3 +1,6 @@
+/**
+ * Created by bby on 15/6/4.
+ */
 var express = require('express');
 var user = require('../controllers/user');
 var auth = require('../middlewares/auth');
@@ -8,14 +11,13 @@ var config = require('../config');
 var router = express.Router();
 var ua = require('../middlewares/useragent');
 
-/* GET home page. */
-router.get('/', function(req, res) {
-	var userInfo = req.session.user ? req.session.user.member_info : {flag:false};
-	res.render(ua.agent(req.headers['user-agent'])+'/views/index.html', {
-	title: '春播-安心健康的网购首选',
-	public: config.PUBLIC,
-	userInfo: userInfo
-	});
-});
+/*用户登录页面*/
+router.get('/login', user.loginView);
+
+/*用户登录操作*/
+router.post('/login', user.login);
+
+/*退出*/
+router.get('/logout', user.logout);
 
 module.exports = router;

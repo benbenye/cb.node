@@ -1,0 +1,286 @@
+{% extends "../layout.html" %}
+{% block main %}
+<link rel="stylesheet" href="http://static.chunboimg.com/css/my_chunbo.css">
+<div class="wrap clearfix">
+    {% include "./nav.html" %}
+    <div class="content my_order">
+        <div class="user_infro clearfix">
+            <span class="photo"><img src="http://i3.chunboimg.com/{{ avatar_url }}" alt="{{ userInfo.nickname }}"></span>
+            <div class="user_detail">
+                <p class="member"><a class="name" href="javascript:;">{{ userInfo.nickname }}</a><!-- 普通会员 --></p>
+                <p class="enter_time">{{ userInfo.reg_time | splitBirthday('-') }}加入春播</p>
+                <p class="credits"><a href="/my/points" class="first">积分：{{ userInfo.points if userInfo.points else "0" }}积分（价值¥{{ userInfo.points/100 if userInfo else '0' }}元）</a><a href="/my/coupons">代金券：{{ coupons if coupons else '0' }}张</a><a href="/my/giftcards">春播卡：¥{{ giftCardBalance if giftCardBalance else "0.00" }}</a><a href="/my/balance">余额：¥{{ balance if balance else "0.00" }}元</a></p>
+            </div>
+        </div>
+        {% include './orderList.html' %}
+
+        <div class="collect my_collect">
+
+            <div class="tab_wrap">
+                <ul class="tab">
+                    <li class="on first">
+                        <a href="javascript:;">
+                            我的心愿单
+                        </a>
+                    </li>
+                </ul>
+                <a href="/Favorite/index.html" class="check_all">
+                    查看更多 》
+                </a>
+            </div>
+            <div class="luobo_wrap tab_content">
+                <a href="javascript:;" class="left_btn left_btn_disable" onclick="aLeft(this);">
+                </a>
+                <a href="javascript:;" class="right_btn" onclick="aRight(this)">
+                </a>
+                <div class="lunbo">
+                    <ul class="clearfix">
+                        <li>
+                            <a href="/product/2871.html" class="img" target="_blank">
+                                <img src="http://i2.chunboimg.com/group1/M00/01/60/Cv4IdVVMjd-AQlAYAAVAmeld02E209_120_120.jpg">
+                            </a>
+                            <p class="name">
+                                肥瘦相间 香而不腻                     </p>
+                            <h4>
+                                <a href="/product/2871.html" target="_blank">
+                                    家育草原香猪五花肉                        </a>
+                            </h4>
+                            <p class="price">
+                                <strong>
+                                    ¥ 29.80                        </strong>
+                            </p>
+                            <p class="num">
+                                500g                    </p>
+                        </li><li>
+                        <a href="/product/3317.html" class="img" target="_blank">
+                            <img src="http://i3.chunboimg.com/group1/M00/00/45/Cv4IbFS4otOAXdWqAAhbeMusoro606_120_120.jpg">
+                        </a>
+                        <p class="name">
+                            欧盟标准 口感酸甜适中                    </p>
+                        <h4>
+                            <a href="/product/3317.html" target="_blank">
+                                佳沛新西兰绿奇异果                        </a>
+                        </h4>
+                        <p class="price">
+                            <strong>
+                                ¥ 17.90                        </strong>
+                        </p>
+                        <p class="num">
+                            4颗装                    </p>
+                    </li><li>
+                        <a href="/product/5077.html" class="img" target="_blank">
+                            <img src="http://i2.chunboimg.com/group1/M00/00/04/Cv4IbFSlI8CAJpoIAA52O68JNbk528_120_120.jpg">
+                        </a>
+                        <p class="name">
+                            高品质 不含防腐剂                    </p>
+                        <h4>
+                            <a href="/product/5077.html" target="_blank">
+                                法国爱果士苹果草莓果泥                        </a>
+                        </h4>
+                        <p class="price">
+                            <strong>
+                                ¥ 22.90                        </strong>
+                        </p>
+                        <p class="num">
+                            400g                    </p>
+                    </li>        </ul>
+                </div>
+            </div></div>
+        <div class="collect recent_browse">
+            <div class="tab_wrap">
+                <ul class="tab">
+                    <li class="on first"><a href="javascript:;">最近浏览</a></li>
+                    <li><a href="javascript:;">购买记录</a></li>
+                    <li><a href="javascript:;">本周热销</a></li>
+                </ul>
+            </div>
+            <div class="luobo_wrap tab_content" id="history_list" style="display: block;"><a href="javascript:;" class="left_btn left_btn_disable" onclick="aLeft(this);">
+            </a>
+                <a href="javascript:;" class="right_btn" onclick="aRight(this)">
+                </a>
+                <div class="lunbo">
+                    <ul class="clearfix">
+                    </ul>
+                </div></div>
+            <div class="luobo_wrap tab_content" id="already_list" style="display: none;"><a href="javascript:;" class="left_btn left_btn_disable" onclick="aLeft(this);">
+            </a>
+                <a href="javascript:;" class="right_btn" onclick="aRight(this)">
+                </a>
+                <div class="lunbo">
+                    <ul class="clearfix">
+                    </ul>
+                </div></div>
+            <div class="luobo_wrap tab_content" id="hot_list" style="display: none;">
+
+                <a href="javascript:;" class="left_btn left_btn_disable" onclick="aLeft(this);">
+                </a>
+                <a href="javascript:;" class="right_btn" onclick="aRight(this)">
+                </a>
+                <div class="lunbo">
+                    <ul class="clearfix">
+                        <li>
+                            <a href="/product/2337.html" class="img" target="_blank">
+                                <img src="http://i2.chunboimg.com/http://i2.chunboimg.com/group1/M00/00/52/Cv4IbFTFPMuAa_R9AAeDHTXNftM222_120_120_120_120.jpg">
+                            </a>
+                            <p class="name">
+                                品质超群的智利进口红提                </p>
+                            <h4>
+                                <a href="/product/2337.html" target="_blank">
+                                    春播安心优选智利红提                    </a>
+                            </h4>
+                            <p class="price">
+                                <strong>
+                                    ¥ 21                    </strong>
+                            </p>
+                            <p class="num">
+                                500g                </p>
+                        </li><li>
+                        <a href="/product/5753.html" class="img" target="_blank">
+                            <img src="http://i2.chunboimg.com/http://i3.chunboimg.com/group1/M00/00/48/Cv4IdVS878qAHCTPAAYOmRv9ap4715_120_120_120_120.jpg">
+                        </a>
+                        <p class="name">
+                            春播自有 真正五常有机米                </p>
+                        <h4>
+                            <a href="/product/5753.html" target="_blank">
+                                春播五常有机稻花香                    </a>
+                        </h4>
+                        <p class="price">
+                            <strong>
+                                ¥ 89                    </strong>
+                        </p>
+                        <p class="num">
+                            5kg                </p>
+                    </li><li>
+                        <a href="/product/6043.html" class="img" target="_blank">
+                            <img src="http://i3.chunboimg.com/http://i2.chunboimg.com/group1/M00/00/90/Cv4IbFTdxhqAGaY5AAVOmU7GDoY510_120_120_120_120.jpg">
+                        </a>
+                        <p class="name">
+                            春播招牌 还原番茄原始味                </p>
+                        <h4>
+                            <a href="/product/6043.html" target="_blank">
+                                春播农庄有机栽培超级番茄                    </a>
+                        </h4>
+                        <p class="price">
+                            <strong>
+                                ¥ 23.8                    </strong>
+                        </p>
+                        <p class="num">
+                            400-450g                </p>
+                    </li><li>
+                        <a href="/product/5815.html" class="img" target="_blank">
+                            <img src="http://i3.chunboimg.com/http://i3.chunboimg.com/group1/M00/01/6D/Cv4IdVVRvn-Ab8sKAAXFSB-jZNE371_120_120_120_120.jpg">
+                        </a>
+                        <p class="name">
+                            春播有机稻花香 买一赠一                </p>
+                        <h4>
+                            <a href="/product/5815.html" target="_blank">
+                                春播五常有机稻花香                    </a>
+                        </h4>
+                        <p class="price">
+                            <strong>
+                                ¥ 59                    </strong>
+                        </p>
+                        <p class="num">
+                            2.5kg                </p>
+                    </li><li>
+                        <a href="/product/3143.html" class="img" target="_blank">
+                            <img src="http://i2.chunboimg.com/http://i2.chunboimg.com/group1/M00/00/1D/Cv4IdVSubu6AFlq1AAWNJv9GnoM850_120_120_120_120.jpg">
+                        </a>
+                        <p class="name">
+                            松软香糯，香甜可口                </p>
+                        <h4>
+                            <a href="/product/3143.html" target="_blank">
+                                佳农菲律宾香蕉                    </a>
+                        </h4>
+                        <p class="price">
+                            <strong>
+                                ¥ 14.9                    </strong>
+                        </p>
+                        <p class="num">
+                            600-700g                </p>
+                    </li><li>
+                        <a href="/product/5731.html" class="img" target="_blank">
+                            <img src="http://i2.chunboimg.com/http://i3.chunboimg.com/group1/M00/00/F4/Cv4IbFUiTiGAe0E1AAYsHzhocmE218_120_120_120_120.jpg">
+                        </a>
+                        <p class="name">
+                            手工制作 精选食材零添加                </p>
+                        <h4>
+                            <a href="/product/5731.html" target="_blank">
+                                春播订制云南玫瑰鲜花饼                    </a>
+                        </h4>
+                        <p class="price">
+                            <strong>
+                                ¥ 32.8                    </strong>
+                        </p>
+                        <p class="num">
+                            240g                </p>
+                    </li><li>
+                        <a href="/product/2561.html" class="img" target="_blank">
+                            <img src="http://i2.chunboimg.com/http://i2.chunboimg.com/group1/M00/01/80/Cv4IdVVa9LiAedOTAAgT90e9dbk198_120_120_120_120.jpg">
+                        </a>
+                        <p class="name">
+                            一公斤90~120尾 区别120+小虾                </p>
+                        <h4>
+                            <a href="/product/2561.html" target="_blank">
+                                加拿大深海北极虾                    </a>
+                        </h4>
+                        <p class="price">
+                            <strong>
+                                ¥ 38                    </strong>
+                        </p>
+                        <p class="num">
+                            400g                </p>
+                    </li><li>
+                        <a href="/product/7845.html" class="img" target="_blank">
+                            <img src="http://i2.chunboimg.com/http://i3.chunboimg.com/group1/M00/01/8A/Cv4IdVVcMIGAVHfaAAaquNOHJyk135_120_120_120_120.jpg">
+                        </a>
+                        <p class="name">
+                            10元一粒 附赠开椰器                </p>
+                        <h4>
+                            <a href="/product/7845.html" target="_blank">
+                                春播安心优选泰国椰青                    </a>
+                        </h4>
+                        <p class="price">
+                            <strong>
+                                ¥ 59                    </strong>
+                        </p>
+                        <p class="num">
+                            4粒装                </p>
+                    </li><li>
+                        <a href="/product/3273.html" class="img" target="_blank">
+                            <img src="http://i2.chunboimg.com/http://i2.chunboimg.com/group1/M00/00/36/Cv4IbFS0jUCAcLQLAAQzso_j3OM244_120_120_120_120.jpg">
+                        </a>
+                        <p class="name">
+                            来自火龙果核心产区                </p>
+                        <h4>
+                            <a href="/product/3273.html" target="_blank">
+                                佳农越南白心火龙果                    </a>
+                        </h4>
+                        <p class="price">
+                            <strong>
+                                ¥ 22.5                    </strong>
+                        </p>
+                        <p class="num">
+                            1000-1500g                </p>
+                    </li><li>
+                        <a href="/product/5227.html" class="img" target="_blank">
+                            <img src="http://i2.chunboimg.com/http://i3.chunboimg.com/group1/M00/00/26/Cv4IbFSv7fiABEJsAAY8hYkUua0460_120_120_120_120.jpg">
+                        </a>
+                        <p class="name">
+                            新鲜的内蒙大草原的酸奶                </p>
+                        <h4>
+                            <a href="/product/5227.html" target="_blank">
+                                雪原兰格格蒙古族酸奶                    </a>
+                        </h4>
+                        <p class="price">
+                            <strong>
+                                ¥ 9.8                    </strong>
+                        </p>
+                        <p class="num">
+                            200g                </p>
+                    </li>    </ul>
+                </div></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,7 +1,7 @@
-{% extends "layout.html" %}
+{% extends "../layout.html" %}
 
 {% block main %}
-<form action="/login/post" method="post">
+<form action="/login" method="post">
 	<input type="text" name="username">
 	<input type="password" name="password">
 	<button type="submit">登录</button>

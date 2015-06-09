@@ -1,0 +1,46 @@
+{% extends "../layout.html" %}
+{% block main %}
+<link rel="stylesheet" href="http://static.chunboimg.com/css/my_chunbo.css">
+<div class="wrap clearfix">
+	{% include "./nav.html" %}
+	<div class="content account_security">
+				<h2 class="title">{{ title }}</h2>
+				<ul class="security_action">
+					<li class="level clearfix">
+						<span class="left">安全等级</span>
+						<div class="right">
+							<div class="safe_bar"><span class="bar_inner" style="width:30%;background: #DD4822;"></span></div>
+									<p class="tips">较弱</p>					</div>
+					</li>
+					<li>
+						<span class="left">登录密码</span>
+						<div class="right">
+							<a href="/member/changepwd.html" class="border_btn">修改</a>
+							<p class="tips">合理结合数字、字母、特殊符号有助于提高登录密码的安全强度</p>
+						</div>
+					</li>
+					<li>
+						<span class="left">邮箱验证</span>
+						<div class="right">
+																						<a href="/member/ajaxsendactiveemail.html" class="border_btn" onclick="return ValidateEmail(this)">立即验证</a>							<p class="tips">邮箱验证后，可用于快速找回登录密码</p>						
+						</div>
+					</li>
+					<li>
+						<span class="left">手机验证</span>
+						<div class="right">
+							<a href="/member/bindmobile.html" class="border_btn">绑定手机</a>
+								<p class="tips">手机验证后，可使用手机号快速登录或者找回登录密码</p>
+													
+						</div>
+					</li>
+					<li>
+						<span class="left">支付密码</span>
+						<div class="right">
+														<a href="" class="border_btn" onclick="return checkSecurityStatus();">设置</a>						<p class="tips">为了您的自己安全，使用账户中余额、春播卡等资金时，需输入支付密码</p>
+						</div>
+					</li>
+				</ul>
+			</div>
+</div>
+
+{% endblock %}
