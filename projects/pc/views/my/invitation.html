@@ -11,27 +11,135 @@
 	                    <li class="text-right">获取返现</li>
 	                </ul>
 	            </div>
-	            
-	            <h2 class="planHeader"><small>使用分享基金卡</small></h2>
-	            <div class="promotion" style="padding-bottom:0;height:74px;">
+	            {% if (preStatus.flag == 1) %}
+		            <h2 class="planHeader">B计划  - <small>春播分享基金卡特权－送红包，得返现</small></h2>
+		            <div class="block_tips">
+		                <h4 class="block_title">恭喜您已获得由春播奉上的 ¥{{ preStatus.info.amount }} 元分享基金！</h4>
+		                <p class="block_infor">您可以向您的10位好友每人赠送一个{{ preStatus.info.amount/10 }}元春播红包，在以下列表添加好友邮箱并点击“发送”即可。每位好友消费完{{ preStatus.info.amount/10 }}元红包后，您将获得等额返现，最高累计金额为{{ preStatus.info.amount }}元。发出红包后别忘了提醒TA哦，快和朋友们一起享受春播的健康美食吧！</p>
+		                <p class="block_link">&nbsp;</p>
+		                <dl class="block_care">
+		                    <dt>注意事项：</dt>
+		                    <dd>1. 您需在激活后15天内({{ preStatus.info.start_time }}-{$preStatus.info.end_time }})送出红包；</dd>
+		                    <dd>2. 您所邀请的好友须为新用户，且通过手机号注册春播；</dd>
+		                    <dd>3. 您的每位好友只能接收一次春播红包，红包使用有效期为30天；</dd>
+		                    <dd>4. 您收到的返现将会进入您的春播余额，没有使用期限制;</dd>
+		                    <dd>5. 余额到账时间为您好友使用分享基金春播券下单且订单已支付的时间;</dd>
+		                </dl>
+		            </div>
+	            {% endif %}
+	           	{% if (preStatus.flag == 1) %}
+	           		{% if (prestatus.status == 1) %}
+	  	            <div class="promotion">
+	  	                <h3 class="title">第一步：给还未注册春播的好友发送红包
+	  	                </h3>
+	  	                <div class="input_infor" style="padding-bottom:20px;">
+	  	                <input type="text" class="input_text" name="contact" value="" placeholder="请输入好友邮箱或手机" style="font-size:13px;">
+	  	                <a href="" class="confirm_btn" style="float:left;" onclick="return sendInviteMessage();">发送</a>
+	  	                    <div class="copy_success" style="display:none;">
+	  	                    <i class="tick"></i>
+	  	                    <p>发送成功!</p>
+	  	                        <span class="trigon_icon"><span></span></span>
+	  	                    </div>
+	  	                    <p class="invite_tips invite_tips4" style="width: 305px;">您已发出<span>{ preStatus.info.invite_people }}</span>个红包, 前10名注册的好友可获得</p>
+	  	                </div>
+	  	                
+	  	                <h3 class="title" style="padding-top:20px;border-top:1px solid #cccccc;">第二步：您的朋友使用完 ¥{{ preStatus.info.amount/10 }} 元红包后，您可获得 ¥{{ preStatus.info.amount/10 }} 元的返现，最高累积 ¥{{ preStatus.info.amount }} 元</h3>
+	  	            </div>
+  	            {% elif (preStatus.status == 2) %}
+                      <div class="promotion">
+                          <p class="over_line1">您的邀请用户注册数已用完</p>
+                          <p class="over_line2">您可以继续 <a href="" onclick="return showBind();">绑定新的分享基金卡</a>
+                      </div>
+  	            {% elif (preStatus.status == 3) %}
+                      <div class="promotion">
+                          <p class="over_line1 orange_line">您的分享基金卡已经过期!</p>
+                          <p class="over_line2">您可以继续 <a href="" onclick="return showBind();">绑定新的分享基金卡</a>
+                      </div>
+  	            {% endif %}  
+  	            {% else %}     
+			            <h2 class="planHeader"><small>使用分享基金卡</small></h2>
+			            <div class="promotion" style="padding-bottom:0;height:74px;">
+			                <div class="share_card"><a href="" class="confirm_btn" onclick="return showBind();">我有分享基金卡</a><a href="http://www.chunbo.com/HelpCenter/index/content_id/61" class="rules_link" target="_blank">如何获得分享基金卡？</a></div>
+			                <div class="input_infor card_error"></div>
+			            </div>	
+	           	{% endif %}  
+  	            {% if (preStatus.flag == 1) %}  
+	  	            {% if (preStatus.status == 2 or preStatus.status == 3) %}
+			            <div class="bind-share" style="display: none; ">
+			                    <div class="shade_box"></div>
+			                <div class="promotion referal_pop" style="margin-left: -328px; margin-top:-100px;">
+			                    <a href="javascript:;" class="close" onclick="return closeBind();"></a>
+			                    <h3 class="title">绑定春播分享基金卡</h3>        
+			                    <div class="input_infor card_error">
+			                        <input type="text" class="input_text" value="" name="invite_code" style="font-size:13px;width:220px;" placeholder="请输入分享基金卡上的邀请码">
+			                        <input type="text" class="input_text" value="" name="name" style="font-size:13px;width:120px;margin-left:10px;" placeholder="请填写您的姓名">
+			                        <a href="" class="confirm_btn" onclick="return active();">绑定</a></div>
+			                    <p class="invite_tips3"></p>
+			                </div>
+			            </div>
+									{% endif %}
+									{% else %}
+									 <div class="bind-share" style="display: none; ">
+	                    <div class="shade_box"></div>
+			                <div class="promotion referal_pop" style="margin-left: -328px; margin-top:-100px;">
+			                    <a href="javascript:;" class="close" onclick="return closeBind();"></a>
+			                    <h3 class="title">绑定春播分享基金卡</h3>        
+			                    <div class="input_infor card_error">
+			                        <input type="text" class="input_text" value="" name="invite_code" style="font-size:13px;width:220px;" placeholder="请输入分享基金卡上的邀请码">
+			                        <input type="text" class="input_text" value="" name="name" style="font-size:13px;width:120px;margin-left:10px;" placeholder="请填写您的姓名">
+			                        <a href="" class="confirm_btn" onclick="return active();">绑定</a></div>
+			                    <p class="invite_tips3"></p>
+			                </div>
+			            </div>
+								{% endif %}
 
-	                <div class="share_card"><a href="" class="confirm_btn" onclick="return showBind();">我有分享基金卡</a><a href="http://www.chunbo.com/HelpCenter/index/content_id/61" class="rules_link" target="_blank">如何获得分享基金卡？</a></div>
-	                <div class="input_infor card_error"></div>
-	            </div>
 	            <input type="hidden" name="" id="inviteAmount" value="10">
 	            <input type="hidden" name="" id="inviteType" value="2">
 	            <div class="purchase_detail">
 	                <h3 class="purchase_title">我的返现明细</h3>
 	                <div class="purchase_infor clearfix">
 	                    <ul class="purchase_block" id="InviteComplet">
-	                        <li class="first">已赚取<span>¥0</span>余额<span>¥0</span>春播券</li>
-	                                            </ul>
+                        <li class="first">已赚取<span>¥{{ inviteLoged.amountSum }}</span>余额<span>¥{{ inviteLoged.counponsSum }}</span>春播券</li>
+                        {% if (inviteLoged.count > 0) %}
+                        {% for item in inviteLoged.list %}
+                        <li>
+	                        <ul class="purchase_items clearfix">
+	                            <!-- <li class="photo"><span class="photo"><img src="images/temp/pic_user.jpeg" alt=""></span></li> -->
+	                            <li class="friends_infor">
+	                                <p class="phone_num">{{ item.nickname }}</p>
+	                                <p class="status">已购物</p>
+	                            </li>
+	                            <li class="amount">已返现<span class="green">¥{{ item.log_amount }}</span>余额</li>
+                          </ul>
+                        </li>
+                        {% endfor %}
+                        {% else %}
+                        <p class="no-log-tip">还没有已赚取信息哦~</p>
+	                      {% endif %}
+                      </ul>
 	                    <ul class="purchase_block" style="float:right;" id="isInvite">
-	                        <li class="first">赚取中<span>¥0</span>余额<span>¥0</span>春播券</li>
-	                                            </ul>
+                        <li class="first">赚取中<span>¥{{ inviteLoging.amountSum }}</span>余额<span>¥{{ inviteLoged.counponsSum }}</span>春播券</li>
+                        {% if (inviteLoging.count > 0) %}
+                        {% for item in inviteLoging.list %}
+                        <li>
+                          <ul class="purchase_items clearfix">
+                            <!-- <li class="photo"><span class="photo"><img src="images/temp/pic_user.jpeg" alt=""></span></li> -->
+                            <li class="friends_infor">
+                              <p class="phone_num">{{ item.nickname }}</p>
+                              <p class="status">注册未购物</p>
+                            </li>
+                            <li class="amount">正在返现<span class="green">¥{{ item.log_amount }}</span>余额</li>
+                          </ul>
+                        </li>
+                        {% endfor %}
+                        {% else %}
+                        <p class="no-log-tip">还没有赚取中信息哦~</p>
+	                      {% endif %}
+                      </ul>
 	                </div>
 	                
 	            </div>
 	        </div>
 </div>
+<script src="http://static.chunboimg.com/js/invitation/common.js"></script>
 {% endblock %}

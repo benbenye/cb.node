@@ -6,6 +6,17 @@
   <div class="content my_order">
     <h2 class="title">{{ title }}</h2>
     {% include './orderList.html' %}
+		<div class="paginating"></div>
   </div>
 </div>
+
+<script src="/{{ ua }}/public/js/public/page.js" type="text/javascript"></script>
+<script>
+	var pager = new Page({
+		curPage : {{ page }},
+		maxPage : {{ pages }},
+		objContainer : '.paginating',
+		url:'/my/order?status='+{{ status }}
+	});
+</script>
 {% endblock %}

@@ -2,19 +2,19 @@
     <h2 class="title"><a href="/member/index.html">我的春播</a></h2>
     <dl>
         <dt>交易管理</dt>
-        <dd><a href="/my/order">我的订单</a></dd>
-        <dd><a href="/favorite/index.html">我的心愿单</a></dd>
-        <dd><a href="/member/thebuyproduct.html">已购商品</a></dd>
+        <dd><a href="/my/order" {% if userInfo.flag %}onclick="return showLogin(this);" {% endif %}>我的订单</a></dd>
+        <dd><a href="/my/fav" {% if userInfo.flag %}onclick="return showLogin(this);" {% endif %}>我的心愿单</a></dd>
+        <dd><a href="/my/purchased" {% if userInfo.flag %}onclick="return showLogin(this);" {% endif %}>已购商品</a></dd>
     </dl>
     <dl>
         <dt>账户中心</dt>
-        <dd><a href="/my/info">个人信息</a></dd>
-        <dd><a href="/my/security">账户安全</a></dd>
-        <dd><a href="/my/invitation">分享基金</a></dd>
-        <dd><a href="/my/points">我的积分</a></dd>
-        <dd><a href="/my/coupons">我的春播券</a></dd>
-        <dd><a href="/my/giftcards">我的春播卡</a></dd>
-        <dd><a href="/my/balance">我的余额</a></dd>
+        <dd><a href="/my/info" {% if userInfo.flag %}onclick="return showLogin(this);" {% endif %}>个人信息</a></dd>
+        <dd><a href="/my/security" {% if userInfo.flag %}onclick="return showLogin(this);" {% endif %}>账户安全</a></dd>
+        <dd><a href="/my/invitation" {% if userInfo.flag %}onclick="return showLogin(this);" {% endif %}>分享基金</a></dd>
+        <dd><a href="/my/points" {% if userInfo.flag %}onclick="return showLogin(this);" {% endif %}>我的积分</a></dd>
+        <dd><a href="/my/coupons" {% if userInfo.flag %}onclick="return showLogin(this);" {% endif %}>我的春播券</a></dd>
+        <dd><a href="/my/giftcards" {% if userInfo.flag %}onclick="return showLogin(this);" {% endif %}>我的春播卡</a></dd>
+        <dd><a href="/my/balance" {% if userInfo.flag %}onclick="return showLogin(this);" {% endif %}>我的余额</a></dd>
     </dl>
     <!--
     <dl>

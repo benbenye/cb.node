@@ -1,0 +1,84 @@
+{% extends "../layout.html" %}
+{% block main %}
+<link rel="stylesheet" href="http://static.chunboimg.com/css/my_chunbo.css?v=20150616000001">
+<style>
+  .no-log-tip{clear: both; text-align: center; padding: 50px}
+</style>
+<div class="wrap clearfix">
+	{% include "./nav.html" %}
+	<div class="content my_wishlist">
+			<h2 class="title">{{ title }}</h2>
+			<div class="my_wishlist_tab">
+				<div class="tab_wrap">
+					<ul class="tab">
+						<li class="{% if (type == 1) %}on {% endif %}first"><a href="/my/fav?type=1">商品清单</a></li>
+						<li{% if (type == 2) %} class="on"{% endif %}><a href="/my/fav?type=2">菜谱清单</a></li>
+					</ul>
+				</div>
+				<div class="tab_content" style="display: block;">
+					{% if (data.length == 0) %}
+					<p class="no-log-tip">你还没有添加心愿单哦~</p>
+					{% endif %}
+					{% if (type == 1) %}
+					<div class="search_shop w_880">
+						<div class="shop_list">
+							<ul class="clearfix">
+					{% elif (type == 2) %}
+					
+					<div class="food_list">
+						<ul class="clearfix">
+					{% endif %}
+					{% for item in data %}
+					{% if (type == 1) %}
+								<li>
+						            <a href="/product/{{ item.product_id }}.html" class="img">
+						            	<img src="http://i3.chunboimg.com/{{ item.url|replace('.jpg','_120_120.jpg',1) }}">
+						            </a>
+						            <p class="name">{{ item.subname }}</p>
+						            <h4><a href="/product/{{ item.product_id }}.html">{{ item.shortname }}</a></h4>
+						            <p class="price"><strong>¥ {{ item.chunbo_price }}</strong>
+						            </p>
+						            <p class="num">{{ item.specifications }}</p>
+						            <p class="fav cur" href="/my/delfav" onclick="return del_favorite(this,{{ item.favorite_id }})"><span></span>已添加到心愿单</p>
+						            <div class="btn_box">
+						            	<a href="javascript:void(0);" class="add_cart" onclick="add_cart_fly($('.add_cart'),'{{ item.url }}','{{ item.product_id }}',1,'{{ item.sku_code }}')">加入购物车</a>
+						            </div>
+						    	</li>
+					{% elif (type == 2) %}
+							<li>
+					            <img src="http://i3.chunboimg.com/{{ item.url | replace('.jpg', '_280_188.jpg', 1) }}" class="img">
+					            <h3><a href="/Cookbook/detail/cookbook_id/{{ item.cookbook_id }}.html">{{ item.name }}</a></h3>
+					            <p class="desc">{{ item.description }}</p>
+					            <p class="fav cur" href="/my/delfav" onclick="return del_favorite(this,{{ item.favorite_id }})">
+					            	<span></span>已添加到心愿单</p>
+							</li>
+					{% endif %}
+					{% endfor %}
+					{% if (type == 1) %}
+							</ul>
+						</div>
+					</div>
+					{% elif (type == 2) %}
+							</ul>
+						</div>
+					{% endif %}
+					<div class="paginating"></div>
+				</div>
+			</div>
+		</div>
+</div>
+<script src="/{{ ua }}/public/js/public/page.js" type="text/javascript"></script>
+<script src="http://static.chunboimg.com/js/favorite/common.js"></script>
+<script src="http://static.chunboimg.com/js/common/common.js"></script>
+{% if (type == 1) %}
+<script src="http://static.chunboimg.com/js/product/product.js"></script>
+{% endif %}
+<script>
+	var pager = new Page({
+		curPage : {{ page }},
+		maxPage : {{ pages }},
+		objContainer : '.paginating',
+		url:'/my/fav?type='+{{ type }}
+	});
+</script>
+{% endblock %}

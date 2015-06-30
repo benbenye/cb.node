@@ -1,26 +1,82 @@
 {% extends "../layout.html" %}
 {% block main %}
 <link rel="stylesheet" href="http://static.chunboimg.com/css/my_chunbo.css">
+<style>
+	a:hover{text-decoration: none;}
+	.pop_box_box{position: fixed; top: 0; right: 0; bottom: 0; left: 0; background-color: rgba(0,0,0,.7); text-align: center; z-index: 1009;}
+	.pop_box_box .close{ display: inline-block; *display: inline; *zoom: 1;
+	 border: 1px solid #ccc; color: #333; background-color: #fff; padding: 6px 12px; float: right; margin-right: 30px; border-radius: 4px; margin-top: -25px;}
+	 .pop_box_box .close:hover,.pop_box_box .close:focus,.pop_box_box .close:active{  color: #333333;background-color: #ebebeb;border-color: #adadad;
+	 	text-decoration: none;}
+	.pop_box_box .close:active {
+  background-image: none;
+  text-decoration: none;
+  outline: 0;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+          box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);}
+	.pop_box{background:#fff;width:540px;padding:50px 0 28px 40px; position: static; text-align: left; margin-top: 120px;}
+	.pop_box .title{height:70px;line-height:70px;color:#33495f;font-size:30px;margin-bottom:10px;text-indent:-5px;}
+	.pop_box .edit_new_address li{padding-bottom:20px;height:46px;}
+	.pop_box2 .edit_new_address .li_left{width:100px;}
+  .pop_box2 .edit_new_address .li_right{width:438px;}
+  .pop_box .btn_green{background:#2bbc69;width:192px;}
+  .pop_box .edit_new_address .big_text .text{width:340px;}
+  .pop_box .edit_new_address .text{float:left;height:24px;line-height:24px;font-size:16px;border:1px solid #c3c8cc;outline:none;border-radius:2px;width:150px;color:#999;background:#fff;font-family:'Microsoft yahei';padding:10px 30px 10px 10px;}
+  .pop_box .edit_new_address .li_left{float:left;line-height:46px;font-size:15px; color: #000;}
+  .pop_box .edit_new_address .li_right{position:relative;width:430px;zoom:1;float:left;}
+  .pop_box .btn{display:inline-block;width:178px;height:46px;border-radius:2px;text-align:center;font-size:16px;line-height:46px;color:#fff;}a{text-decoration:none;}
+  .input_m {color: #d5d5d5;float: left;line-height: 46px;width: 15px;text-align: center;}
+</style>
 <div class="wrap clearfix">
 	{% include "./nav.html" %}
 	<div class="content my_account">
-		<h2 class="title">{{ title }} <a href="/coupons/bind.html" class="border_btn" id="BindCoupons">绑定新的春播卡</a></h2>
+		<h2 class="title">{{ title }}</h2>
+		<p class="subtitle"><span class="first">我的春播卡余额：¥{{ giftCardBalance if giftCardBalance else '0' }}</span>
+				<a href="javascript:;" class="border_btn" id="BindCard_btn">绑定新的春播卡</a></p>
 		<div class="points_show">
 						<div class="tab_wrap">
 						</div>
 						<table class="points_table tab_content" style="display: table;">
 							<tbody>
 								<tr style="border-bottom:none;">
-								<th width="20%">编号</th>
-								<th width="10%">面值</th>
-								<th width="10%">余额</th>
-								<th width="13%">状态</th>
-								<th width="20%">有效期</th>
-								<th width="13%">来源</th>
-								<th>操作</th>
-							</tr>
+									<th width="20%">编号</th>
+									<th width="10%">面值</th>
+									<th width="10%">余额</th>
+									<th width="13%">状态</th>
+									<th width="20%">有效期</th>
+									<th width="13%">来源</th>
+									<th>操作</th>
+								</tr>
+								{% for item in giftCardObj.list %}
+								<tr>
+									<td>{{ item.card_code }}</td>
+									<td>&gen;{{ item.face_value }}</td>
+									<td>&gen;{{ item.remain_value }}</td>
+									<td>
+										{% if (item.status == 1) %}
+											可使用
+										{% elif (item.status == 0) %}
+											不可用
+										{% elif (item.status == 100) %}
+											作废
+										{% endif %}
+									</td>
+									<td>{{ item.start_date | splitBirthday() }}至{{ item.end_state | splitBirthday() }}</td>
+									<td>{% if (item.buy_source == 1) %}线下{% elif (item.buy_source == 2) %}线上{% elif (item.buy_source == 3) %}赠送{% endif %}</td>
+									<td>
+										{% if (item.has_change_log == 'T') %}
+										<a href="">查看消费记录</a>
+										{% else %}
+										暂无消息记录
+										{% endif %}
+									</td>
+								</tr>
+								{% endfor %}
 							</tbody>
 						</table>
+						{% if (giftCardObj.flag == 2) %}
+						<p class="no-log-top">暂无记录</p>
+						{% endif %}
 						<div class="paginating"></div>
 		</div>
 		<div class="how_to_use">
@@ -43,5 +99,96 @@
 		</div>
 	</div>
 </div>
+<div class="pop_box_box" style="display:none;">
+	<div class="pop_box pop_box2 hide" id="bind_chunbo_quan" style="display: inline-block;">
+	    <a href="javascript:;" class="close">×</a>
+	    <h3 class="title">绑定新的春播卡</h3>
+	    <div class="edit_new_address">
+	        <ul>
+	            <li class="clearfix big_text">
+	            <div class="li_left">请输入卡号</div>
+	            <div class="li_right">
+	              <input type="text" class="text" value="" id="bind_chunbo_card_number1" style="width: 62px;padding-right: 10px;" onkeydown="InputKeydown(this);" maxlength="4">
+	              <span class="input_m">-</span>
+	              <input type="text" class="text" value="" id="bind_chunbo_card_number2" style="width: 62px;padding-right: 10px;" onkeydown="InputKeydown(this);" maxlength="4">
+	              <span class="input_m">-</span>
+	              <input type="text" class="text" value="" id="bind_chunbo_card_number3" style="width: 62px;padding-right: 10px;" onkeydown="InputKeydown(this);" maxlength="4">
+	              <span class="input_m">-</span>
+	              <input type="text" class="text" value="" id="bind_chunbo_card_number4" style="width: 62px;padding-right: 10px;" onkeydown="InputKeydown(this);" maxlength="4">
+		            <i class="tick"></i>
+	            </div>
+	            </li>
+	            <li class="clearfix big_text">
+	            <div class="li_left">请输入密码</div>
+	            <div class="li_right">
+	                <input type="text" class="text" value="" id="password"><i class="tick"></i>
+	            </div>
+	            </li>
+	            <li class="clearfix">
+	                <div class="li_left">&nbsp;</div>
+	                <div class="li_right">
+	                    <a href="javascript:;" class="btn btn_green " id="BindCard">绑定到当前账户</a>
+	                </div>
+	            </li>
+	        </ul>
+	    </div>
+	</div>
+</div>
 
+<script>
+$(document).ready(function(){
+	$('.content').on('click','#BindCard_btn',function(){
+		$('.pop_box_box').show();
+	})
+
+		$('.close').click(function(){
+			$('.pop_box_box').hide();
+		})
+		$('#BindCard').click(function(){
+		    var number1=$('#bind_chunbo_card_number1').val();
+		    var number2=$('#bind_chunbo_card_number2').val();
+		    var number3=$('#bind_chunbo_card_number3').val();
+		    var number4=$('#bind_chunbo_card_number4').val();
+		    if(number1 =='' || number2 == '' || number3 == '' || number4 == ''){
+		        alert('请输入完整的卡号');
+		        return false;
+		    }
+		    var password=$('#password').val();
+		    if(password == ''){
+		        alert('请输入春播卡密码');
+		        return false;
+		    }
+		    var number=number1+'-'+number2+'-'+number3+'-'+number4;
+		    $.ajax({
+		        url:"/my/bindGiftcard",
+		        data:{'card_code':number,'card_pwd':password},
+		        type:'post',
+		        dataType:'json',
+		        success:function(i){
+		            if(i.status==1){
+		                window.parent.location.reload();
+		            }else{
+		                alert(i.info);
+		            }
+		        }
+		    })
+		});
+
+});
+	    function InputKeydown(dom){
+	        var val = $(dom).val();
+	        if(val.length >=4){
+	            $(dom).next('span.input_m').next('input.text').trigger('focus');
+	        }
+	    }
+</script>
+<script src="/{{ ua }}/public/js/public/page.js" type="text/javascript"></script>
+<script>
+	var pager = new Page({
+		curPage : {{ page }},
+		maxPage : {{ pages }},
+		objContainer : '.paginating',
+		url:'/my/giftcard'
+	});
+</script>
 {% endblock %}

@@ -1,0 +1,131 @@
+{% extends "../layout.html" %}
+{% block main %}
+<link rel="stylesheet" href="http://static.chunboimg.com/css/my_chunbo.css">
+<div class="wrap clearfix">
+	{% include "./nav.html" %}
+	<div class="content my_order">
+		<h2 class="title">订单{{ data.orderId }}</h2>
+		<input type="hidden" value="118625866" class="oid">
+		<p class="subtitle">状态:
+			{% if (data.orderStatus == 1) %}
+			未付款
+			{% elif (data.orderStatus == 2) %}
+			待发货
+			{% elif (data.orderStatus == 3) %}
+			待收货
+			{% elif (data.orderStatus == 4) %}
+			已完成
+			{% elif (data.orderStatus == 5) %}
+			已取消
+			{% endif %}
+		</p>
+		{% if (data.orderStatus == 2 or data.orderStatus == 4 and data.logitics) %}
+		<table class="my_order_status">
+			<tr class="table_head">
+				<th colspan="3">订单跟踪</th>
+			</tr>
+			{% for item in logitics.list %}
+			<tr>
+				<td width="30%">{{ item.deliveryContent }}</td>
+				<td width="30%">{{ item.deliveryDate }}</td>
+				<!-- <td width="40%">{$LogiticsVo.signer}</td> -->
+			</tr>
+			{% endfor %}
+			<tr>
+				<td colspan="3">承运人：{{ item.deliveryCompany }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;运单号：{{ item.wayBillNo }}</td>
+			</tr>
+		</table>
+		{% endif %}
+		<div class="order_item">
+			<h3 class="title"><span>下单时间：{{ data.orderDate | splitBirthday() }}</span><span>总价：{{ data.payMoney }}</span><span>送至：{{ data.provinceName }}{{ data.cityName }}{{ data.countyName }}{{ data.custAddress }}</span></h3>
+			<div class="status">
+				<p class="status_title">
+					{% if (data.orderStatus == 1) %}
+					未付款
+					{% elif (data.orderStatus == 2) %}
+					待发货
+					{% elif (data.orderStatus == 3) %}
+					待收货
+					{% elif (data.orderStatus == 4) %}
+					已完成
+					{% elif (data.orderStatus == 5) %}
+					已取消
+					{% endif %}						</p>
+					{% if (data.orderStatus == 1 or data.orderStatus == 2 or data.orderStatus == 3) %}
+					<p class="status_time">预计送达时间：{{ data.bookDate | splitBirthday() }}</p>
+					{% endif %}
+					{% if (data.orderStatus == 1) %}
+					<a href="" class="wait_pay_button toPay" value="" cbclick="37-9">去付款</a>	
+					{% endif %}
+				</div>
+				{% for item in data.orderDetailList %}
+				{% if (item.isGift != 1) %}
+				<ul class="item clearfix">
+					<input type="hidden" class="pid" value="{{ item.product_id }}">
+					<li class="item_pic"><a href="/product/{{ item.product_id }}.html" target="_blank"><img src="http://i2.chunboimg.com/{{ item.url|replace('.jpg','_120_120.jpg',1) }}" alt=""></a></li>
+					<li class="item_infor"><p class="item_title">{{ item.subname }}</p>
+						<p class="item_name"><a href="/product/{{ item.product_id }}.html" target="_blank">{{ item.name }}</a></p>
+						{% if (item.isGift == 1) %}
+						<p class="sub"><i class="i-txticon-red">赠品</i><a href="/product/{{ item.product_id }}.html">{{ item.subname }}{{ specifications }} ×{{ item.skuNum }}</a></p>
+						{% endif %}
+					</li>
+					<li class="item_num">X{{ item.skuNum }}</li>
+					<li class="item_price">¥{{ item.chunbo_price * item.skuNum }}</li>
+					{% if (item.has_lot == 1) %}
+					<li class="item_trace">
+						<a href="/OrderInfo/getInspection/skuId/0.html" onclick="return getInspection(this)">追踪检测情况</a></li>
+						{% endif %}
+						{% if (data.orderStatus == 4 and item.is_review == 0) %}
+						<li class="item_trace show_goods">
+								<a href="/index.php/OrderInfo/Review/" class="border_btn Review">晒单评价 赚积分</a><p class="return">
+								<else />
+								<a href="#" class="border_btn">待审核</a>
+						</li>
+						{% endif %}
+					</ul>
+				{% endif %}
+				{% endfor %}
+					<div style="clear:both"></div>
+					<ul class="order_detail_list clearfix">
+						<li class="left">
+							<dl>
+								<dt>配送信息</dt>
+								<dd>收货人：{{ data.custName }}</dd>
+								<dd>收货地址：{% set ss = ([ data.provinceName, data.cityName, data.countyName, data.custAddress ]|join('')) %}{{ ss|subDoubleByte(27) }}</dd>
+								<dd>手机号码：
+									{% if (data.custTelephone != '') %}
+									{{ data.custTelephone }}
+									{% else %}
+									{{ data.custMobile }}
+									{% endif %}
+								</dd>
+							</dl>
+							<dl>
+								<dt>支付信息</dt>
+								<dd>{% if (data.paymentType == 1) %}在线支付{% elif (data.paymentType == 2) %}货到付款{% endif %}</dd>
+								</dl>
+								<dl>
+									<dt>发票信息</dt>
+									<dd>公司：{{ data.invoiceTitle }}</dd>
+									<dd>发票内容：{{ data.invoiceContent }}</dd>
+								</dl>
+							</li>
+							<li class="right">
+								<dl>
+									<dt>总商品金额：¥{{ data.totalPrice }}</dt>
+									<dd>促销：¥-{{ data.cashCoupon }}</dd>
+									<dd>运费：¥-{{ data.deliveryPrice }}</dd>
+									<dd>积分：¥-{{ data.memberPointsPrice }}</dd>
+									<dd>春播券：¥-{{ data.couponPrice }}</dd>
+									<dd>余额：¥-{{ data.accountMoney }}</dd>
+									<dd>春播卡：¥-{{ data.giftcardPrice }}</dd>
+									<dd class="total">总计：<span>¥{{ data.payMoney }}</span></dd>
+								</dl>
+							</li>
+						</ul>
+					</div>
+					
+				</div>	
+			</div>
+		</div>
+		{% endblock %}

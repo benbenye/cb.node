@@ -1,3 +1,30 @@
+<!-- login box -->
+{# sdfsf #}
+{% if logined %}
+    <div class="login_popup" >
+        <h3 class="title">登录春播</h3>
+        <a href="javascript:;" class="cross"></a>
+        <p class="error_line"></p>
+        <div class="clearfix login_content">
+            <div class="left">
+                <p class="line" style="margin-top:0;">
+                    <input type="text" class="input_text validateEmailorMobile" name="username"  placeholder="请输入您的手机号/邮箱" value="{:cookie('user')}"></p>
+                <p class="line input_infor">
+                    <input type="password" class="input_text validateLen" value="" name="password" placeholder="请输入密码"></p></p>
+                <input type="hidden" name="login_url" id="login_url" value="{:U('Login/login')}">
+                <input type="hidden" name="redirect_url" value="{:I('get.redirect_url')}" id="redirect_url">
+                <input type="hidden" name="form_token" value="{$form_token}">
+                <p class="line"><a href="" class="confirm_btn" id="login">登录</a></p>
+                <p class="line"><a href="" class="btn_checkbox btn_checkbox_cur" id="keepLogin"></a>记住我<a href="{:U('ForgetPwd')}" class="forget">忘记密码</a></p>
+            </div>
+            <div class="right">
+                欢迎您注册春播，春播是您安心健康食品的网购首选！
+            </div>
+        </div>
+        <p class="login_now">还不是春播会员？<a href="{:U('regMobile')}">立即注册</a></p>
+    </div>
+{% endif %}
+{# sdfsf #}
 <div class="footer">
     <div class="footer_inner">
         <a href="/" class="footer_logo"><img src="http://static.chunboimg.com/images/footer_logo.jpg" alt="春播"></a>

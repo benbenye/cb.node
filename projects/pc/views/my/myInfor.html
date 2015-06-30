@@ -29,7 +29,7 @@
                     <div class="li_left">生日</div>
                     <div class="li_right">
                         <div class="clearfix select_box">
-                            <span class="text select_box_list"><font id="birth_year">{{ userInfo.birthday | splitBirthday('-',0) }}</font><span><i></i></span></span>
+                            <span class="text select_box_list"><font id="birth_year">{{ userInfo.birthday | splitBirthday('-',0) | int() |string() |replace('0', '请选择',1) }}</font><span><i></i></span></span>
                             <div class="privilege_slide" style="display: none;" flag="0">
                                <ul id="birthdayYear"></ul>
                             </div>
@@ -68,4 +68,37 @@
     </div>
 </div>
     </div>
+    <!--上传图像-->
+<div class="shade_box" style="display:none;"></div>
+<div class="pop_up_profile clearfix avatar" style="margin-top:-178px;display:none;">
+    <h3 class="title">上传头像</h3>
+    <a href="javascript:;" class="cross"></a>
+    <div class="pop_up_photo">
+        <div class="left">
+            <img src="http://i2.chunboimg.com/{{ userInfo.avatar_url|replace('.jpg','_120_120.jpg',1) }}" alt="{{ userInfo.nickname }}" id="member_img" name="filename" width="200px" height="200px">
+    </div>
+    <div class="right">
+            <form enctype='multipart/form-data' target='uploadImageframe' method='post' action='/ImageUpload/upload' name='uploadFrom' id="uploadFrom">
+            <p class="upload_btn_line" style="cursor: pointer;"><span class="border_btn upload_btn" style="cursor: pointer;">从您的电脑中上传照片<input type="file" id="uploadeImg" name='upfile'></span></p>
+            </form>
+            <div class="pop_up_photo_tips">
+                <p>从电脑中选择你喜欢的照片</p>
+        <p>你可以上传JPG、JPEG、GIF、PNG或BMP文件</p>
+            </div>
+            <div class="pop_up_photo_tips">
+                建议上传近距离的照片（比如大头照、特写），这样经过编辑后的头像会很清楚
+            </div>
+            <div class="pop_up_photo_tips">
+                <input type="hidden" value="" id="member_img_new_save" />
+        <a href="javascript:;" class="confirm_btn" id="doUploadeImg">保存头像</a>
+            </div>
+    </div>
+    </div>
+    <iframe src=""  width="0" height="0" style="display:none;" name="uploadImageframe"></iframe>
+</div>
+<div class="pop_up_profile clearfix" style="margin:-152px 0 0 -226px;width:200px; display: none;" id="mesg_tankuang">
+    <a href="javascript:;" class="cross"></a>
+    <p>操作成功</p>
+</div>
+    <script src="/{{ ua }}/public/js/my/info.js"></script>
 {% endblock %}

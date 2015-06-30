@@ -7,9 +7,10 @@ var auth = require('../middlewares/auth');
 var request = require('superagent');
 var path = require('path');
 var prefix = require('superagent-prefix')('/static');
-var config = require('../config');
+var config = require('../config/config');
 var router = express.Router();
 var ua = require('../middlewares/useragent');
+var encoding = require('encoding');
 
 router.get('/download', function(req, res){
     res.render(ua.agent(req.headers['user-agent'])+'/views/app/download.html',{
@@ -18,4 +19,19 @@ router.get('/download', function(req, res){
     })
 });
 
+router.get('/getmp3',function(req, res){
+	var parser = function(res, done) {
+	  res.text = '';
+	  res.setEncoding('binary');
+	  res.on('data', function(chunk) { res.text += chunk });
+	  res.on('end', function() {
+	    res.text = encoding.convert(res.text, 'UTF8', 'GBK').toString();
+	    done();
+	  })
+	};
+	request.get('http://www.5tps.com/html/4180.html').parse(parser).end(function(err, data){
+		console.log('res',data.res.charset)
+		res.send(data.res.text)
+	})
+})
 module.exports = router;

@@ -1,5 +1,5 @@
 var request = new Request();
-var config = require('../config');
+var config = require('../config/config');
 
 function Request(){
 	this.checkAjax = function(req, res, next){

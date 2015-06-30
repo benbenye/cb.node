@@ -7,7 +7,7 @@ var auth = require('../middlewares/auth');
 var request = require('superagent');
 var path = require('path');
 var prefix = require('superagent-prefix')('/static');
-var config = require('../config');
+var config = require('../config/config');
 var router = express.Router();
 var ua = require('../middlewares/useragent');
 

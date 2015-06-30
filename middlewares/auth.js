@@ -1,9 +1,10 @@
 var auth = new Auth();
 var path = require('path');
-var config = require('../config');
+var config = require('../config/config');
 var request = require('superagent');
 var prefix = require('superagent-prefix')('/static');
 var ua = require('./useragent');
+var logger = require('../controllers/log');
 
 function Auth(){
 	this.checkLogin = function(req, res, next) {
@@ -15,7 +16,13 @@ function Auth(){
 				public: config.PUBLIC
 			});
 		}else{
-			next();
+			request
+				.get(config.API_USER + 'Member/get/member_id/'+req.session.user.member_id)
+				.end(function(err, data){
+					if(err) logger.error(err,data.ok);
+					req.user = JSON.parse(data.res.text).member_info;
+					next();
+				});
 		}
 	};
 }

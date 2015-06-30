@@ -9,20 +9,32 @@
 					<li class="level clearfix">
 						<span class="left">安全等级</span>
 						<div class="right">
+							{% if (security == 1) %}
 							<div class="safe_bar"><span class="bar_inner" style="width:30%;background: #DD4822;"></span></div>
-									<p class="tips">较弱</p>					</div>
+									<p class="tips">较弱</p>
+							{% elif (security == 2) %}
+								<div class="safe_bar"><span class="bar_inner" style="width:60%;"></span></div>
+								<p class="tips">较强</p>
+							{% else %}
+
+								<div class="safe_bar"><span class="bar_inner" style="width:100%;background: #48DD22;"></span></div>
+								<p class="tips">安全</p>
+							{% endif %}
+							</div>
+
 					</li>
 					<li>
 						<span class="left">登录密码</span>
 						<div class="right">
-							<a href="/member/changepwd.html" class="border_btn">修改</a>
+							<a href="javascript:;" class="border_btn" id="chPass">修改</a>
 							<p class="tips">合理结合数字、字母、特殊符号有助于提高登录密码的安全强度</p>
 						</div>
 					</li>
 					<li>
 						<span class="left">邮箱验证</span>
 						<div class="right">
-																						<a href="/member/ajaxsendactiveemail.html" class="border_btn" onclick="return ValidateEmail(this)">立即验证</a>							<p class="tips">邮箱验证后，可用于快速找回登录密码</p>						
+							<a href="/member/ajaxsendactiveemail.html" class="border_btn" onclick="return ValidateEmail(this)">立即验证</a>
+							<p class="tips">邮箱验证后，可用于快速找回登录密码</p>						
 						</div>
 					</li>
 					<li>
@@ -30,17 +42,55 @@
 						<div class="right">
 							<a href="/member/bindmobile.html" class="border_btn">绑定手机</a>
 								<p class="tips">手机验证后，可使用手机号快速登录或者找回登录密码</p>
-													
 						</div>
 					</li>
 					<li>
 						<span class="left">支付密码</span>
 						<div class="right">
-														<a href="" class="border_btn" onclick="return checkSecurityStatus();">设置</a>						<p class="tips">为了您的自己安全，使用账户中余额、春播卡等资金时，需输入支付密码</p>
+							<a href="" class="border_btn" onclick="return checkSecurityStatus();">设置</a>
+							<p class="tips">为了您的自己安全，使用账户中余额、春播卡等资金时，需输入支付密码</p>
 						</div>
 					</li>
 				</ul>
-			</div>
-</div>
+	</div>
 
+	<div class="content change_password" style="display:none;">
+		<h2 class="title">修改密码</h2>
+		<form action="/my/changePaw" method="post" onsubmit="return ajaxForm(this)">
+			<ul class="input_infor">
+				<li>
+					<span class="left">我的旧密码</span>
+					<div class="right"><input type="password" name="old_password" class="require validateLen"></div>
+				</li>
+				<li>
+					<span class="left">输入新密码</span>
+					<div class="right"><input type="password" name="password" class="require validateLen"></div>
+				</li>
+				<li>
+					<span class="left">再次输入新密码</span>
+					<div class="right"><input type="password" name="rep_password" class="require validateLen"></div>
+				</li>
+			</ul>
+			<p>
+				<input type="submit" value="确认" class="confirm_btn">
+				<input type="button" value="取消" class="confirm_btn cancel_btn">
+			</p>
+		</form>
+	</div>
+</div>
+<style>
+	.cancel_btn{ position: relative;top: -70px; left: 165px;}
+</style>
+<script src="http://static.chunboimg.com/js/member/security.js?v=20150616000001"></script>
+<script>
+	$(document).ready(function(){
+		$('.account_security').on('click', '#chPass',function(){
+			$('.account_security').hide();
+			$('.change_password').show();
+		});
+		$('.change_password').on('click', '.cancel_btn', function(){
+			$('.change_password,.account_security').toggle();
+		})
+	});
+</script>
 {% endblock %}

@@ -1,0 +1,57 @@
+{% extends "../layout.html" %}
+{% block main %}
+<link rel="stylesheet" href="http://static.chunboimg.com/css/my_chunbo.css">
+<div class="wrap clearfix">
+	{% include "./nav.html" %}
+	<div class="content purchase_history">
+			<h2 class="title">{{ title }}</h2>
+			<div class="filter w_880 clearfix">
+				<div class="filter_right">
+					<span>筛选：</span>
+					<a href="/my/purchased?is_stock={{ '0' if (is_stock == 1) else '1' }}&order={{ order }}&page=1" class="selectStock{% if(is_stock == 1) %} cur{% endif %}">只显示有货<span></span></a>
+				</div>
+				<div class="filter_left">
+			        <span>排序：</span>
+					<a href="/my/purchased?order={{ '2' if (order == 1) else '1' }}" class="">按销量</a>
+					<a href="/my/purchased?order={{ '4' if (order == 3) else '3' }}" class="">按价格</a>
+					<a href="/my/purchased?order={{ '6' if (order == 5) else '5' }}" class="">按上架时间</a>					
+					<a href="/my/purchased?order={{ '8' if (order == 7) else '7' }}" class="">按评论数</a>
+				</div>
+			</div>
+			<div class="search_shop w_880">
+				<div class="shop_list">
+					<ul class="clearfix">
+						{% for amount in data %}
+						<li>
+				            <a href="/product/{{ amount.product_id }}.html" class="img">
+								<img src="http://img.chunbo.com/{{ amount.image_url }}">
+							</a>
+				            <p class="name">{{ amount.shortname }}</p>
+				            <!-- <h4><a href="/product/{{ amount.product_id }}.html">{{ amount.name }}</a></h4> -->
+				            <p class="price"><strong>¥ {{ amount.chunbo_price }}</strong>
+				                <del>¥ {{ amount.market_price }}</del>
+				            </p>
+                            <p class="num">{{ amount.specifications }}&nbsp;</p>
+				            <p class="fav"><span class=""></span><a href="javascript:void(0);" onclick="addProduct2Favorite('{{ amount.product_id }}')">添加到心愿单</a></p>
+				            <div class="btn_box">
+				            	<a href="javascript:void(0);" class="add_cart" onclick="add_cart_fly($('.add_cart'),'{{ amount.url }}','{{ amount.product_id }}',1,'{{ amount.sku_code }}')">加入购物车</a>
+				            </div>
+			    		</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+			<div class="paginating"></div>
+		</div>
+<input type="hidden" name="addFavorite_url" id="addFavorite_url" value="/my/addfav">
+</div>
+<script src="/{{ ua }}/public/js/public/page.js" type="text/javascript"></script>
+<script>
+	var pager = new Page({
+		curPage : {{ page }},
+		maxPage : {{ pages }},
+		objContainer : '.paginating',
+		url:'/my/purchased?order='+{{ order }}
+	});
+</script>
+{% endblock %}

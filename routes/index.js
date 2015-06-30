@@ -4,12 +4,12 @@ var auth = require('../middlewares/auth');
 var request = require('superagent');
 var path = require('path');
 var prefix = require('superagent-prefix')('/static');
-var config = require('../config');
-var router = express.Router();
+var config = require('../config/config');
+var index = express.Router();
 var ua = require('../middlewares/useragent');
 
 /* GET home page. */
-router.get('/', function(req, res) {
+index.get('/', function(req, res) {
 	var userInfo = req.session.user ? req.session.user.member_info : {flag:false};
 	res.render(ua.agent(req.headers['user-agent'])+'/views/index.html', {
 	title: '春播-安心健康的网购首选',
@@ -18,4 +18,4 @@ router.get('/', function(req, res) {
 	});
 });
 
-module.exports = router;
+module.exports = index;
