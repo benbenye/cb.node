@@ -16,6 +16,9 @@ var async = require('async');
 var cheerio = require('cheerio');
 var http = require('http');
 var BufferHelper = require('bufferhelper');
+var logger = require('../controllers/log');
+var fs = require('fs');
+var chalk = require('chalk');
 
 router.get('/download', function(req, res){
     res.render(ua.agent(req.headers['user-agent'])+'/views/app/download.html',{
@@ -25,6 +28,7 @@ router.get('/download', function(req, res){
 });
 
 router.get('/getmp3',function(req, res){
+	res.send('正在下载');
 	var parserGBK = function(res, done) {
 	  res.text = '';
 	  res.setEncoding('binary');
@@ -39,7 +43,7 @@ router.get('/getmp3',function(req, res){
 	  res.setEncoding('binary');
 	  res.on('data', function(chunk) { res.text += chunk });
 	  res.on('end', function() {
-	    res.text = encoding.convert(res.text, 'GBK', 'UTF8').toString();
+	    res.text = encoding.convert(res.text, 'GBK', 'UTF16').toString();
 	    done();
 	  })
 	};
@@ -52,11 +56,26 @@ router.get('/getmp3',function(req, res){
 		6: [6928, 20],
 		7: [6930, 21]
 	};
+	var audio77 = {
+		1: [5306, 30],
+		2: [5312, 23],
+		3: [5309, 19],
+		4: [5308, 22],
+		5: [5307, 20],
+		6: [5311, 20],
+		7: [5310, 21]
+	}
 	var hrefs = [];
 	//http://www.5tps.com/down/4180_48_1_1.html
+//	for(var i = 1; i <= 7; ++i){
+//		for(var j = 1; j <= audio[i][1]; ++j){
+//			hrefs.push('http://www.5tps.com/down/'+audio[i][0]+'_48_1_'+j+'.html');
+//		}
+//	}
+	//http://www.77nt.com/play/5306/0.html
 	for(var i = 1; i <= 7; ++i){
-		for(var j = 1; j <= audio[i][1]; ++j){
-			hrefs.push('http://www.5tps.com/down/'+audio[i][0]+'_48_1_'+j+'.html');
+		for(var j = 1; j <= audio77[i][1]; ++j){
+			hrefs.push('http://www.77nt.com/play/'+audio77[i][0]+'/'+(j-1)+'.html');
 		}
 	}
 	var tasks = [];
@@ -64,44 +83,43 @@ router.get('/getmp3',function(req, res){
 	async.whilst(
 	    function () { return count < hrefs.length-1; },
 	    function (callback) {
-				console.log(count)
+			console.log(hrefs[count])
+			request.get(hrefs[count])
+			.parse(parserGBK).end(function(err, data){
+				$ = cheerio.load(data.res.text);
+				var url = encodeURI($('audio source').attr('src'));
+				//if()如果文件已下载略过
+				var stream = fs.createWriteStream(path.join(__dirname, './audio/')+count+'.mp3');
 
-				request.get(hrefs[count]).parse(parserGBK).end(function(err,data){
-
-					$ = cheerio.load(data.res.text);
-					http.get('http://www.5tps.com'+$('#play').attr('src'),function(res){
-						var bufferHelper = new BufferHelper();    //解决中文编码问题
-				         res.on('data', function (chunk) {
-				             bufferHelper.concat(chunk);
-				         });
-				         res.on("end", function () {
-				             //注意，此编码必须与抓取页面的编码一致，否则会出现乱码，也可以动态去识别
-				             var val = iconv.decode(bufferHelper.toBuffer(), 'gb2312'); 
-				             console.log(val)
-				        		count++;	   
-				             callback();
-				         });
-					}).on("error", function () {
-				        callback();
-				     });
-					request.get('http://www.5tps.com'+$('#play').attr('src'))
-						//.set('Cookie','ASPSESSIONIDCASCDBTT=LCPJDHABBHFOFMLFLNPDMFGH; my_play_history=%7C%u660E%u671D%u90A3%u4E9B%u4E8B%u513F%u7B2C%u4E00%u5377_%u9AD8%u9E64%u2014%u2014%u7B2C1%u56DE%2C/play/4180_48_1_1.html; ASPSESSIONIDCCTAADST=IADGADNBKDMECKHNEODKNJDN; 4=true; 3=true; 1=true; vhjj=48; Hm_lvt_70f1448812c0e1f65a8b92423e7f2b42=1435660002,1435745417; Hm_lpvt_70f1448812c0e1f65a8b92423e7f2b42=1435821272; CNZZDATA362661=cnzz_eid%3D1190973278-1435658273-null%26ntime%3D1435816009')
-//						.set('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
-						//.set('Accept-Encoding','gzip, deflate, sdch')
-//						.set('Accept-Language','zh-CN,zh;q=0.8,en;q=0.6')
-						.set('Referer',hrefs[count])
-//						.set('Content-Type','text/html; charset=gb2312')
-//						.set('User-Agent','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36')
-						.parse(parserGBK)
-						.end(function(err, re){
-						if(err) console.log(err);
-						$ = cheerio.load(re.res.text);
-						console.log(re.res.text);
-			        count++;
-			        callback();
-					});
+				var cic = 0, checkSize = 0;
+				var req = request.get(url);
+				req.pipe(stream);
+				req.on('end',function(){
+					count++
+					callback();
+				})
+				req.end();
+				setInterval(function(){
+//				var reaStream = fs.createReadStream(path.join(__dirname, './audio/')+count+'.mp3');
+				fs.existsSync(path.join(__dirname, './audio/')+count+'.mp3', function (exists) {
+				  if(!exists){
+				  	fs.open(path.join(__dirname, './audio/')+count+'.mp3','w+');
+				  }
 				});
-
+					var reaSize = fs.statSync(path.join(__dirname, './audio/')+count+'.mp3').size;
+					
+					if(reaSize == checkSize){
+						cic++;
+						if(cic > 500){
+							console.log(chalk.red('下载异常，重新尝试。'));
+							callback();
+						}
+					}
+					console.log(chalk.blue(path.join(__dirname, './audio/')+count+'.mp3')+chalk.green(',已完成：')+(reaSize/1E6).toFixed(4)+'Mb');
+					
+					checkSize = reaSize;
+				},500);
+			});
 	    },
 	    function (err) {
 			async.waterfall(tasks, function(err, result){
