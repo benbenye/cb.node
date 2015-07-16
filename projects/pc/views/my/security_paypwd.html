@@ -1,0 +1,69 @@
+{% extends "../layout.html" %}
+{% block main %}
+<link rel="stylesheet" href="http://static.chunboimg.com/css/my_chunbo.css">
+<div class="wrap clearfix">
+	{% include "./nav.html" %}
+	{% if isSet %}
+	<div class="content change_password" id="set_payPwd">
+	    <h2 class="title">{{ title }}</h2>
+	    <ul class="input_infor">
+	        <li>
+	            <span class="left">请输入支付密码:</span>
+	            <div class="right"><input type="password" name="password" id="password" class="require"></div>
+	        </li>
+	        <li>
+	            <span class="left">再次输入支付密码:</span>
+	            <div class="right"><input type="password" name="rep_password" id="rep_password" class="require"></div>
+	        </li>
+	    </ul>
+	    <p><input type="button" value="确认" class="confirm_btn" id="setPayPwd"></p>
+	</div>
+	{% else %}
+	<div class="content change_password" id="chan_payPwd">
+		<h2 class="title">{{ title }}</h2>
+		<form action="/my/chaPayPwd" method="post" onsubmit="return ajaxForm(this)">
+			<ul class="input_infor">
+				<li>
+					<span class="left">我的旧密码</span>
+					<div class="right"><input type="password" name="old_password" class="require validateLen"></div>
+				</li>
+				<li>
+					<span class="left">输入新密码</span>
+					<div class="right"><input type="password" name="password" class="require validateLen"></div>
+				</li>
+				<li>
+					<span class="left">再次输入新密码</span>
+					<div class="right"><input type="password" name="rep_password" class="require validateLen"></div>
+				</li>
+			</ul>
+			<p>
+				<input type="submit" value="确认" class="confirm_btn"></p>
+		</form>
+	</div>
+	{% endif %}
+</div>
+<script src="http://static.chunboimg.com/js/member/security.js?v=20150616000001"></script>
+<script>
+	$(function () {
+		$("#setPayPwd").on("click", function () {
+
+			$.ajax({
+				type: 'get',
+				dataType: 'json',
+				url: "/my/setPayPwd",
+				contentType: "application/x-www-form-urlencoded; charset=utf-8",
+				data: {rep_password: $("#rep_password").val(), password: $("#password").val()},
+				success: function (returnData) {
+					if (returnData.status == 1) {
+						window.location.href = "/my/security";
+					} else {
+						alert(returnData.info);
+					}
+				}
+			});
+
+		});
+
+	});
+</script>
+{% endblock %}

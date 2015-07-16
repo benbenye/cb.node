@@ -33,28 +33,46 @@
 					<li>
 						<span class="left">邮箱验证</span>
 						<div class="right">
-							<a href="/member/ajaxsendactiveemail.html" class="border_btn" onclick="return ValidateEmail(this)">立即验证</a>
-							<p class="tips">邮箱验证后，可用于快速找回登录密码</p>						
+							{% if (userInfo.validate_email == 1) %}
+							<a href="/my/bindEmail/change" class="border_btn">更改邮箱</a>
+							<p class="tips">您验证的邮箱：{{ email }}</p>
+							{% else %}
+								{% if userInfo.email %}
+								<a href="/my/sendEmail/0" class="border_btn" onclick="return ValidateEmail(this)">立即验证</a>
+								{% else %}
+								<a href="/my/bindEmail/bind" class="border_btn">立即绑定</a>
+								{% endif %}
+							<p class="tips">邮箱验证后，可用于快速找回登录密码</p>	
+							{% endif %}					
 						</div>
 					</li>
 					<li>
 						<span class="left">手机验证</span>
 						<div class="right">
-							<a href="/member/bindmobile.html" class="border_btn">绑定手机</a>
-								<p class="tips">手机验证后，可使用手机号快速登录或者找回登录密码</p>
+						{% if userInfo.mobile %}
+							<a href="javascript:;" class="border_btn" id="mobile_btn">更改绑定</a>
+							<p class="tips">您验证的手机号：{{ mobile }}</p>
+						{% else %}
+							<a href="javascript:;" class="border_btn" id="mobile_btn">绑定手机</a>
+							<p class="tips">手机验证后，可使用手机号快速登录或者找回登录密码</p>
+						{% endif %}
 						</div>
 					</li>
 					<li>
 						<span class="left">支付密码</span>
 						<div class="right">
-							<a href="" class="border_btn" onclick="return checkSecurityStatus();">设置</a>
+							{% if isSetPayPwd %}
+							<a href="javascript:;" class="border_btn" onclick="return checkSecurityStatus();">设置</a>
+							{% else %}
+							<a href="/my/payPwd" class="border_btn">修改</a>
+							{% endif %}
 							<p class="tips">为了您的自己安全，使用账户中余额、春播卡等资金时，需输入支付密码</p>
 						</div>
 					</li>
 				</ul>
 	</div>
 
-	<div class="content change_password" style="display:none;">
+	<div class="content change_password" id="chan_pwd" style="display:none;">
 		<h2 class="title">修改密码</h2>
 		<form action="/my/changePaw" method="post" onsubmit="return ajaxForm(this)">
 			<ul class="input_infor">
@@ -77,6 +95,41 @@
 			</p>
 		</form>
 	</div>
+
+
+	<div class="content change_password" id="mobile" style="display:none;">
+		<h2 class="title">{{ '绑定手机号' if isBindMobile else '更改绑定手机' }}</h2>
+		<form action="/my/bindMobile" method="post" onsubmit="return ajaxForm(this);">
+			<ul class="input_infor">
+				{% if user.mobile %}
+				<li>
+					<span class="left">请输入手机号</span>
+					<div class="right"><input type="text" name="mobile" class="require validateMobile"></div>
+				</li>
+				{% else %}
+				<li>
+					<span class="left">请输入新手机号</span>
+					<div class="right"><input type="text" name="mobile" class="require validateMobile"></div>
+				</li>
+				<li>
+					<span class="left">请再次输入手机号</span>
+					<div class="right"><input type="text" name="rep_mobile" class="require validateMobile"></div>
+				</li>
+				{% endif %}
+				<li class="certi_code_line">
+					<span class="left">请输入验证码</span>
+					<div class="right"><input type="text" name="verify" class="require">
+						<button class="verify_btn" onclick="sendSMS(this,{{ 1 if isBindMobile else 2 }})" type="button"> 点击获取验证码</button>
+					</div></li>
+			</ul>
+			<p><input type="submit" value="确认" class="confirm_btn">
+				<input type="button" value="取消" class="confirm_btn cancel_btn"></p>
+		</form>
+	</div>
+
+
+<input type="hidden" id="checkSecurityStatus_url" value="/my/securityPayPaw">
+<input type="hidden" name="sendSMS_url" id="sendSMS_url" value="/my/sendSMS">
 </div>
 <style>
 	.cancel_btn{ position: relative;top: -70px; left: 165px;}
@@ -84,13 +137,20 @@
 <script src="http://static.chunboimg.com/js/member/security.js?v=20150616000001"></script>
 <script>
 	$(document).ready(function(){
+		/*修改密码*/
 		$('.account_security').on('click', '#chPass',function(){
 			$('.account_security').hide();
-			$('.change_password').show();
+			$('#chan_pwd').show();
 		});
 		$('.change_password').on('click', '.cancel_btn', function(){
-			$('.change_password,.account_security').toggle();
-		})
+			$('#mobile,#chan_pwd').hide();
+			$('.account_security').show();
+		});
+		/*绑定修改手机*/
+		$('.account_security').on('click', '#mobile_btn', function(){
+			$('.account_security').hide();
+			$('#mobile').show();
+		});
 	});
 </script>
 {% endblock %}

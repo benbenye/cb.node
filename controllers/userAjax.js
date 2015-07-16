@@ -5,7 +5,7 @@ var logger = require('./log');
 var prefix = require('superagent-prefix')('/static');
 var config = require('../config/config');
 var async = require('async');
-var ua = require('../middlewares/useragent');
+var funcHepler = require('../middlewares/funcHelper');
 
 function UserAjax(){
 	/*保存用户信息*/
@@ -33,84 +33,11 @@ function UserAjax(){
 				res.json(JSON.parse(data.res.text))
 			})
 	};
-	/* 修改密码 */
-	this.postChangePaw = function(req, res){
-		var data = req.body;
-
-		if(!data.old_password){
-			res.json({
-				status:0,
-				info:'请输入旧密码！'
-			});
-		}
-		if(!data.password){
-			res.json({
-				status:0,
-				info:'请输入新密码！'
-			})
-		}
-		if(!data.rep_password){
-			res.json({
-				status:0,
-				info:'请再次输入新密码！'
-			})
-		}
-		if(data.old_password.length < 6 || data.old_password.length > 16){
-			res.json({
-				status:0,
-				info:'旧密码长度不正确！'
-			})
-		}
-		if(data.password.length < 6 || data.password.length > 16){
-			res.json({
-				status:0,
-				info:'新密码密码长度不正确！'
-			})
-		}
-		if(data.password !== data.rep_password){
-			res.json({
-				status:0,
-				info:'两次密码输入不一致！'
-			})
-		}
-		if(data.old_password === data.password){
-			res.json({
-				status:0,
-				info:'新密码不能和旧密码相同！'
-			})
-		}
-		request
-			.get(config.API_USER + 'Member/ChangePass/login_id/'+req.user.login_id+'/old_password/'+data.old_password+'/password/'+data.password)
-			.end(function(err, data){
-				if(JSON.parse(data.res.text).flag == 2 || !data.res.text){
-					switch(JSON.parse(data.res.text).erron){
-						case 4108:
-							res.json({
-								status:0,
-								info:'新密码不能和旧密码相同！'
-							})
-							break;
-						default:
-							res.json({
-								status:0,
-								info:'原始密码不正确！'
-							})
-							break;
-					}
-				}else {
-					res.json({
-						status:1,
-						info:'修改成功',
-						url:'security'
-					});
-				}
-			});
-	};
 
 	/* 分享基金 */
 	// this.
 
-	/*绑定春波卡*/
+	/*绑定春播卡*/
 	this.postBindGiftcard = function(req, res){
 		var card_code = req.body.card_code,
 				card_cwd = req.body.card_pwd,
@@ -221,5 +148,60 @@ function UserAjax(){
 				});
 			});
 	};
+
+	/*本周热销*/
+	this.hot = function(req, res){
+		request
+			.get(config.API_YAOJIE+'member/index_hot')
+			.end(function(err, data){
+				var resData = JSON.parse(data.res.text);
+				if(data.ok && resData.errcode == 0){
+
+					var str = '<a href="javascript:;" class="left_btn left_btn_disable" onclick="aLeft(this);"></a>'+
+						'<a href="javascript:;" class="right_btn" onclick="aRight(this)"></a>'+
+						'<div class="lunbo">'+
+						'<ul class="clearfix">';
+					resData.data.forEach(function (o) {
+						str += '<li> <a href="/product/'+
+						o.product_id+'.html" class="img" target="_blank"><img src="'+
+						o.image_url+'"></a><p class="name">'+
+						o.subname+'</p><h4><a href="/product/'+
+						o.product_id+'.html" target="_blank">'+
+						o.shortname+'</a></h4><p class="price"><strong>￥ '+
+						o.chunbo_price+'</strong></p><p class="num">'+
+						o.specifications+'</p></li>'
+					});
+					str += '</ul></div>';
+					res.send(str);
+				}
+			});
+	};
+
+	/*购买记录*/
+	this.already = function (req, res) {
+		request.get(config.API_YAOJIE + 'member/index_already/member_id/'+req.user.member_id).end(function (err, data) {
+			var resData = JSON.parse(data.res.text)
+			if(data.ok && resData.errcode == 0){
+
+				var str = '<a href="javascript:;" class="left_btn left_btn_disable" onclick="aLeft(this);"></a>'+
+					'<a href="javascript:;" class="right_btn" onclick="aRight(this)"></a>'+
+					'<div class="lunbo">'+
+					'<ul class="clearfix">';
+				var data = Object.keys(resData.data);
+				data.forEach(function (o) {
+					str += '<li> <a href="/product/'+
+					resData.data[o].product_id+'.html" class="img" target="_blank"><img src="'+
+					resData.data[o].url+'"></a><p class="name">'+
+					resData.data[o].subname+'</p><h4><a href="/product/'+
+					resData.data[o].product_id+'.html" target="_blank">'+
+					resData.data[o].shortname+'</a></h4><p class="price"><strong>￥ '+
+					resData.data[o].chunbo_price+'</strong></p><p class="num">'+
+					resData.data[o].specifications+'</p></li>'
+				});
+				str += '</ul></div>';
+				res.send(str);
+			}
+		})
+	}
 };
 module.exports = userAjax;

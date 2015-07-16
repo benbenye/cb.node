@@ -5,7 +5,7 @@ var logger = require('./log');
 var prefix = require('superagent-prefix')('/static');
 var config = require('../config/config');
 var async = require('async');
-var ua = require('../middlewares/useragent');
+var funcHepler = require('../middlewares/funcHelper');
 
 
 

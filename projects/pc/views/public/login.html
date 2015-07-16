@@ -1,25 +1,44 @@
 {% extends "../layout.html" %}
-
 {% block main %}
-<form action="/login" method="post">
-	<input type="text" name="username">
-	<input type="password" name="password">
-	<button type="submit">登录</button>
+<!--<form action="/login" method="post">-->
+	<!--<input type="text" name="username">-->
+	<!--<input type="password" name="password">-->
+	<!--<button type="button" id="login">登录</button>-->
+	<!--<input type="hidden" name="form_token" value="{{ form_token }}">-->
+	<!--<input type="hidden" name="redirect_url" value="" id="redirect_url">-->
+	<!--<input type="hidden" name="login_url" id="login_url" value="/Login">-->
+<!--</form>-->
+<link rel="stylesheet" href="http://static.chunboimg.com/css/login.css">
+<style>
+	.login_popup{
+		position: static;
+		left: 0;margin: 0 auto;
+	}
+</style>
+<div class="login_popup">
+	<h3 class="title">登录春播</h3>
+	<a href="javascript:;" class="cross"></a>
+	<p class="error_line"></p>
+	<div class="clearfix login_content">
+		<div class="left">
+			<p class="line" style="margin-top:0;">
+				<input type="text" class="input_text validateEmailorMobile" name="username" placeholder="请输入您的手机号/邮箱" value="yejing@chunbo.com"></p>
+			<p class="line input_infor">
+				<input type="password" class="input_text validateLen" value="" name="password" placeholder="请输入密码"></p><p></p>
 
-</form>
-		<div class="box">
-			<div class="transform">zheshiwenzi </div>
+			<input type="hidden" name="form_token" value="{{ form_token }}">
+			<input type="hidden" name="redirect_url" value="" id="redirect_url">
+			<input type="hidden" name="login_url" id="login_url" value="{{ login_url }}">
+			<p class="line"><a href="javascript:;" class="confirm_btn" id="login">登录</a></p>
+			<p class="line"><a href="javascript:;" class="btn_checkbox btn_checkbox_cur" id="keepLogin"></a>记住我<a href="/Login/ForgetPwd.html" class="forget">忘记密码</a></p>
 		</div>
-		<style>
-			.box{
-				height: 400px;
-			}
-			.transform{
-				width: 20px;
-				height: 20px;
-				background-color: red;
-				transform:translate3d(0,0,200px);
-				transform-origin: top left;
-				}
-		</style>
+		<div class="right">s
+			欢迎您登录春播，春播是您安心健康食品的网购首选！
+		</div>
+	</div>
+	<p class="login_now">还不是春播会员？<a href="/Login/regMobile.html">立即注册</a></p>
+</div>
+<script src="http://static.chunboimg.com/js/jquery.cookie.js"></script>
+<!--<script src="http://static.chunboimg.com/js/login/common.js"></script>-->
+<script src="/{{ ua }}/public/js/login/common.js"></script>
 {% endblock %}

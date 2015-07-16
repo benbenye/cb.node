@@ -6,7 +6,7 @@ var path = require('path');
 var prefix = require('superagent-prefix')('/static');
 var config = require('../config/config');
 var index = express.Router();
-var ua = require('../middlewares/useragent');
+var ua = require('../middlewares/funcHelper');
 
 /* GET home page. */
 index.get('/', function(req, res) {

@@ -9,7 +9,7 @@ var MongoStore = require('connect-mongo')(session);
 var nunjucks = require('nunjucks');
 
 var config = require('./config/config');
-var ua = require('./middlewares/useragent');
+var ua = require('./middlewares/funcHelper');
 
 var app = express();
 
@@ -22,16 +22,16 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'projects')));
-// app.use(session({
-//   secret: 'keyboard cat',
-//   cookie: { maxAge: 60000*60*24*365 },
-//   resave: true,
-//   saveUninitialized: true,
-//   store: new MongoStore({
-//     db:'session',
-//     url:'mongodb://localhost/session'
-//   })
-// }));
+app.use(session({
+  secret: 'keyboard cat',
+  cookie: { maxAge: 60000*60*24*365 },
+  resave: true,
+  saveUninitialized: true,
+  store: new MongoStore({
+    db:'session',
+    url:'mongodb://localhost/session'
+  })
+}));
 
 require('./config/routers')(app);
 // catch 404 and forward to error handler

@@ -93,13 +93,11 @@
                   <span class="sj_icon"></span>
               </span>
             {% elif (item.orderStatus == 2 or item.orderStatus == 4) %}
-              <a href="{:U('Member/getLogitics',array('order_id'=>$OrderVo['orderId']))}" class="getLogitics">查看物流</a>|
+              <a href="/my/getLogitics/{{ item.orderId }}" class="getLogitics">查看物流</a>|
             {% elif (item.orderStatus == 3) %}
               <a href="{:U('OrderInfo/finishOrder',array('order_id'=>$OrderVo['orderId']))}" onclick="return finishOrder(this)">确认收货</a>
               |
-              <a href="{:U('Member/getLogitics',array('order_id'=>$OrderVo['orderId']))}" class="getLogitics">
-                  查看物流
-              </a>|
+              <a href="/my/getLogitics/{{ item.orderId }}" class="getLogitics">查看物流 </a>|
             {% endif %}
             <a href="/my/orderDetail/{{ item.orderId }}">订单详情</a>
           </div>
@@ -192,7 +190,7 @@
         <li class="item_price">¥{{ i.salePrice*i.skuNum }}</li>
         {% if (i.has_lot == 1 and item.orderStatus == 3 or item.orderStatus == 4 or item.orderStatus == 7) %}
         <li class="item_trace">
-          <a href="/OrderInfo/getInspection/skuId/1001374/skuLot/20150521.html" onclick="return getInspection(this)">
+          <a href="/my/getInspection/skuId/{{ i.skuId }}/skuLot/{{ i.skuLotList[0].skuLot }}" onclick="return getInspection(this)">
               追踪检测情况
           </a>
         </li>
@@ -234,3 +232,4 @@
 <script src="http://static.chunboimg.com/js/orderinfo/review.js"></script>
 <script src="http://static.chunboimg.com/js/orderinfo/common.js"></script>
 <script src="http://static.chunboimg.com/js/my_chunbo.js"></script>
+<script src="http://static.chunboimg.com/js/orderinfo/dialog-plus-min.js"></script>

@@ -29,7 +29,8 @@
                     <div class="li_left">生日</div>
                     <div class="li_right">
                         <div class="clearfix select_box">
-                            <span class="text select_box_list"><font id="birth_year">{{ userInfo.birthday | splitBirthday('-',0) | int() |string() |replace('0', '请选择',1) }}</font><span><i></i></span></span>
+                            {% set year = userInfo.birthday | splitBirthday('-',0) | int() |string() %}
+                            <span class="text select_box_list"><font id="birth_year">{{ '请选择' if (year == 0) else year}}</font><span><i></i></span></span>
                             <div class="privilege_slide" style="display: none;" flag="0">
                                <ul id="birthdayYear"></ul>
                             </div>

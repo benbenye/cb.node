@@ -1,0 +1,101 @@
+{% extends "../layout.html" %}
+{% block main %}
+<link rel="stylesheet" href="http://static.chunboimg.com/css/my_chunbo.css">
+<div class="wrap clearfix">
+  {% include "./nav.html" %}
+  {% if type == 'change' %}
+  <div class="content change_password">
+    <h2 class="title">修改绑定邮箱
+      <ul class="email_progress clearfix">
+        <li class="on">
+          <span class="circle">1</span>
+          <div class="describe">验证邮箱</div>
+        </li>
+        <li>
+          <span class="circle">2</span>
+          <p class="describe">输入新邮箱</p>
+        </li>
+        <li>
+          <span class="circle">3</span>
+          <p class="describe">完成</p>
+        </li>
+      </ul>
+    </h2>
+    <div class="get_message">
+      <p class="message">已发送验证邮件至：{{ userInfo.email }}请立即完成验证，邮箱验证不通过则修改邮箱失败，验证邮件24小时内有效，请尽快登录您的邮箱点击认证链接完成验证。</p>
+      <a href="{{ userInfo.email_url }}" class="confirm_btn" target="_blank">查看验证邮件</a>
+
+    </div>
+  </div>
+  {% endif %}
+  {% if type == 'verify' %}
+  <div class="content change_password">
+    <h2 class="title">修改绑定邮箱
+      <ul class="email_progress clearfix">
+        <li>
+          <span class="circle">1</span>
+          <div class="describe">验证邮箱</div>
+        </li>
+        <li class="on">
+          <span class="circle">2</span>
+          <p class="describe">输入新邮箱</p>
+        </li>
+        <li>
+          <span class="circle">3</span>
+          <p class="describe">完成</p>
+        </li>
+      </ul>
+    </h2>
+    <div class="get_message">
+      <form action="/my/bindEmail/ValidateChangeEmail" method="post" onsubmit="return ajaxForm(this);">
+        <ul class="input_infor">
+          <li>
+            <span class="left">请输入新邮箱</span>
+            <div class="right"><input type="text" name="email" class="require validateEmail"></div>
+          </li>
+          <li>
+            <span class="left">请再次输入新邮箱</span>
+            <div class="right"><input type="text" name="rep_email" class="require validateEmail"></div>
+          </li>
+        </ul>
+        <p><input type="submit" value="确认" class="confirm_btn"></p>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+  {% if type == 'bind' %}
+  <div class="content change_password">
+    <h2 class="title">绑定邮箱
+      <ul class="email_progress clearfix">
+        <li class="on">
+          <span class="circle">1</span>
+          <div class="describe">输入邮箱</div>
+        </li>
+        <li>
+          <span class="circle">2</span>
+          <p class="describe">验证</p>
+        </li>
+        <li>
+          <span class="circle">3</span>
+          <p class="describe">完成</p>
+        </li>
+      </ul>
+    </h2>
+    <form action="/my/bindEmail" method="post" onsubmit="return ajaxForm(this);">
+      <ul class="input_infor">
+        <li>
+          <span class="left">请输入您的邮箱</span>
+          <div class="right"><input type="text" name="email" class="require validateEmail"></div>
+        </li>
+      </ul>
+      <p><input type="submit" value="确认" class="confirm_btn"></p>
+    </form>
+  </div>
+  {% endif %}
+</div>
+<style>
+  .cancel_btn{ position: relative;top: -70px; left: 165px;}
+</style>
+<script src="http://static.chunboimg.com/js/member/security.js?v=20150616000001"></script>
+
+{% endblock %}

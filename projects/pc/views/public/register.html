@@ -1,0 +1,52 @@
+{% extends "../layout.html" %}
+
+{% block main %}
+<link rel="stylesheet" href="http://static.chunboimg.com/css/login.css">
+<style>
+    .login_popup{
+        position: static;
+        left: 0;margin: 0 auto;
+    }
+</style>
+<div class="login_popup">
+    <h3 class="title">注册春播 </h3>
+    <a href="javascript:;" class="cross"></a>
+    <p class="error_line"></p>
+    <div class="no_code clearfix">
+    <div class="left">没有收到验证码？<br>您还可以:</div>
+    <ul class="right">
+        <li>点击重新获取激活短信。</li>
+        <li>通过短信方式将<i>Y123</i>发送到<i>10690266002100</i>，并将<i>Y123</i>填写到验证码的输入框中，点击注册后等待系统确认</li>
+        <li>通过联系客服获取验证码，客服电话：400-888-8878</li>
+    </ul>
+</div>
+    <div class="clearfix login_content">
+        <div class="invite-tip-warning" style="display:none;">
+            <i></i><h5>手慢了，好友李小龙的红包已被抢完。</h5>
+            <p>您可以继续注册，网购安心健康食品。</p>
+        </div>
+        <div class="left">
+            <p class="line" style="padding-top:0;"><input type="text" class="input_text validateMobile" value="" onBlur="return checkMobileRegByBlur();" name="username" placeholder="请输入您的手机号"></p>
+            <p class="line input_infor"><input type="password" class="input_text validateLen" value="" name="password" placeholder="请输入密码"></p></p>
+            <p class="line clearfix"><input type="text" class="input_text require" value="" style="width:100px;float:left;" name="verify" placeholder="验证码">
+                <button type="button" class="border_btn certi_code" onclick="return sendSMS(this,0)" cbclick="1-3">获取激活短信</button></span></p>
+            <p class="line contact">
+                
+                <a href="" class="btn_checkbox btn_checkbox_cur"></a>我已阅读并接受<i><a href="http://chunbo.com/HelpCenter/index/content_id/71" target="_blank">《春播用户协议》</a></i></p>
+            <input type="hidden" name="reg_mobile_url" id="reg_mobile_url" value="/registerMobile">
+            <input type="hidden" name="form_token" value="{{ form_token }}" />
+            <p class="line"><a href="" class="confirm_btn" id="reg_mobile">注册</a></p>
+        </div>
+        <div class="right">
+            <p class="subtitle">使用其他账号注册</p>
+            <p class="special"><a href="{:U('regEmail')}">用邮箱注册</a></p>
+        </div>
+    </div>
+    <p class="login_now">已经是春播会员？<a href="{:U('login')}">立即登录</a></p>
+</div>
+<input type="hidden" name="sendSMS_url" id="sendSMS_url" value="/register/sendSMS">
+<input type="hidden" name="checkMobileReg_url" id="checkMobileReg_url" value="/register/checkMobile">
+<input type="hidden" name="getVerifyToReg_url" id="getVerifyToReg_url" value="/registerMobile">
+<script src="/{{ ua }}/public/js/login/common.js"></script>
+<script src="http://static.chunboimg.com/js/jquery.cookie.js"></script>
+{% endblock %}
