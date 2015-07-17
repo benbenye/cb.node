@@ -38,7 +38,7 @@ router.post('/my/addfav', auth.checkLogin, userAjax.postAddFav);/*添加心愿�
 router.get('/my/purchased', auth.checkLogin, cart.getPurchased);
 
 /* 我的积分 */
-router.get('/my/points', auth.checkLogin, user.getPoints, err.handle);
+router.get('/my/points', auth.checkLogin, user.getPoints);
 
 /* 我的春播券 */
 router.get('/my/coupons', auth.checkLogin, user.getCoupons);

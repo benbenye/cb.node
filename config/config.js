@@ -16,7 +16,7 @@ if(app.get('env') !== 'development'){
 }else{
 	config = {
 		PUBLIC      : "http://static.chunboimg.com/",
-		API_USER    : "http://user.dev.chunbo.com/",
+		API_USER    : "http://user.chunbo.com/",
 		API_CART    : "http://cart.chunbo.com/",
 		API_REVIEW  : "http://review.chunbo.com/",
 		API_SEARCH  : "http://search.chunbo.com/",

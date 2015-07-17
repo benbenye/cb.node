@@ -24,7 +24,6 @@ function UserAjax(){
 
 		/*post 不行  需要用get*/
 		_param = encodeURIComponent(_param);
-		console.log(config.API_USER+'Member/Edit/member_id/'+req.user.member_id+'/'+_param);
 		request
 			.get(config.API_USER+'Member/Edit/member_id/'+req.user.member_id+'/'+_param)
 			.end(function(err, data){
@@ -40,10 +39,10 @@ function UserAjax(){
 	/*绑定春播卡*/
 	this.postBindGiftcard = function(req, res){
 		var card_code = req.body.card_code,
-				card_cwd = req.body.card_pwd,
+				card_pwd = req.body.card_pwd,
 				source = 1;
 		request
-			.get(config.API_USER + 'giftCard/actve/member_id/'+req.user.member_id+'/card_code/'+card_code+'/card_pwd/'+code_pwd)
+			.get(config.API_USER + 'giftCard/actve/member_id/'+req.user.member_id+'/card_code/'+card_code+'/card_pwd/'+card_pwd)
 			.end(function(err, data){
 				if(JSON.parse(data.res.text).flag == 2){
 					switch(JSON.parse(data.res.text).erron){
@@ -150,13 +149,17 @@ function UserAjax(){
 	};
 
 	/*本周热销*/
-	this.hot = function(req, res){
+	this.hot = function(req, res, next){
+		console.log('sss');
 		request
-			.get(config.API_YAOJIE+'member/index_hot')
+			.get(config.API_YAOJIE+'member/index_hot/member_id/'+req.user.member_id)
 			.end(function(err, data){
-				var resData = JSON.parse(data.res.text);
-				if(data.ok && resData.errcode == 0){
-
+				if(err || !data.ok || JSON.parse(data.res.text).flag == 2){
+					logger.error(err || JSON.parse(data.res.text).error_msg || 'data.ok');
+					return next();
+				}
+				if(data.ok && JSON.parse(data.res.text).flag == 1){
+					var resData = JSON.parse(data.res.text);
 					var str = '<a href="javascript:;" class="left_btn left_btn_disable" onclick="aLeft(this);"></a>'+
 						'<a href="javascript:;" class="right_btn" onclick="aRight(this)"></a>'+
 						'<div class="lunbo">'+
@@ -178,30 +181,34 @@ function UserAjax(){
 	};
 
 	/*购买记录*/
-	this.already = function (req, res) {
-		request.get(config.API_YAOJIE + 'member/index_already/member_id/'+req.user.member_id).end(function (err, data) {
-			var resData = JSON.parse(data.res.text)
-			if(data.ok && resData.errcode == 0){
+	this.already = function (req, res, next) {
+		request.get(config.API_YAOJIE + 'member/index_already/member_id/' + req.user.member_id).end(function (err, data) {
+			if(err || !data.ok ||  JSON.parse(data.res.text).flag == 2){
+				logger.error(err || JSON.parse(data.res.text).error_msg || 'data.ok')
+				return next();
+			}
+			if (data.ok &&  JSON.parse(data.res.text).flag == 1) {
+				var resData = JSON.parse(data.res.text);
 
-				var str = '<a href="javascript:;" class="left_btn left_btn_disable" onclick="aLeft(this);"></a>'+
-					'<a href="javascript:;" class="right_btn" onclick="aRight(this)"></a>'+
-					'<div class="lunbo">'+
+				var str = '<a href="javascript:;" class="left_btn left_btn_disable" onclick="aLeft(this);"></a>' +
+					'<a href="javascript:;" class="right_btn" onclick="aRight(this)"></a>' +
+					'<div class="lunbo">' +
 					'<ul class="clearfix">';
 				var data = Object.keys(resData.data);
 				data.forEach(function (o) {
-					str += '<li> <a href="/product/'+
-					resData.data[o].product_id+'.html" class="img" target="_blank"><img src="'+
-					resData.data[o].url+'"></a><p class="name">'+
-					resData.data[o].subname+'</p><h4><a href="/product/'+
-					resData.data[o].product_id+'.html" target="_blank">'+
-					resData.data[o].shortname+'</a></h4><p class="price"><strong>￥ '+
-					resData.data[o].chunbo_price+'</strong></p><p class="num">'+
-					resData.data[o].specifications+'</p></li>'
+					str += '<li> <a href="/product/' +
+					resData.data[o].product_id + '.html" class="img" target="_blank"><img src="' +
+					resData.data[o].url + '"></a><p class="name">' +
+					resData.data[o].subname + '</p><h4><a href="/product/' +
+					resData.data[o].product_id + '.html" target="_blank">' +
+					resData.data[o].shortname + '</a></h4><p class="price"><strong>￥ ' +
+					resData.data[o].chunbo_price + '</strong></p><p class="num">' +
+					resData.data[o].specifications + '</p></li>'
 				});
 				str += '</ul></div>';
 				res.send(str);
 			}
-		})
+		});
 	}
 };
 module.exports = userAjax;

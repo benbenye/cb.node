@@ -51,7 +51,7 @@ function Cart(){
 				return;
 			}
 			res.render(funcHepler.agent(req.headers['user-agent'])+'/views/my/orderInfo.html',{
-				title:'我的订单',
+				title:'我的订单-交易管理-春播',
 				public:config.PUBLIC,
 				ua : funcHepler.agent(req.headers['user-agent']),
 				userInfo:req.user,
@@ -121,7 +121,7 @@ function Cart(){
 				return;
 			}
 			res.render(funcHepler.agent(req.headers['user-agent'])+'/views/my/purchased.html',{
-				title:'已购商品',
+				title:'已购商品-交易管理-春播',
 				public: config.PUBLIC,
 				userInfo: req.user,
 				order:order,
@@ -175,7 +175,7 @@ function Cart(){
 				return;
 			}
 			res.render(funcHepler.agent(req.headers['user-agent'])+'/views/my/orderDetail.html',{
-				title:'订单详情',
+				title:'订单详情-春播',
 				public: config.PUBLIC,
 				ua:funcHepler.agent(req.headers['user-agent']),
 				userInfo: req.user,
@@ -228,23 +228,16 @@ function Cart(){
 		request
 			.get(config.API_YAOJIE + 'member/getLogitics/order_id/'+order_id)
 			.end(function (err, data) {
-				if (err || !data.ok) {
+				if (err || !data.ok || JSON.parse(data.res.text).flag == 2) {
 					logger.error('获取订单物流信息-服务异常');
 					logger.error(err || 'data.ok');
 					return res.json({status:0, info:'获取物流信息失败'});
 				}
 				var resData = JSON.parse(data.res.text);
-				if(data.ok && resData.errcode == 0){
 					res.json({
 						status:1,
 						info:resData.data
 					});
-				}else{
-					res.json({
-						status:0,
-						info:'获取物流信息失败'
-					});
-				}
 			});
 	};
 	
@@ -255,15 +248,13 @@ function Cart(){
 		request
 			.get(config.API_YAOJIE +'member/getInspection/skuId/'+skuId+'/skuLot/'+skuLot)
 			.end(function (err, data) {
-				if (err || !data.ok) {
+				if (err || !data.ok || JSON.parse(data.res.text).flag == 2) {
 					logger.error('追踪检测情况-服务异常');
 					logger.error(err || 'data.ok');
 					return res.send('获取检测情况失败');
 				}
 				var resData = JSON.parse(data.res.text);
-				if(data.ok && resData.errcode == 0){
 					res.send(resData.data);
-				}
 			});
 	};
 }

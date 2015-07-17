@@ -20,7 +20,7 @@ function Auth(){
 			request
 				.get(config.API_USER + 'Member/get/member_id/'+req.session.user.member_id)
 				.end(function(err, data){
-					if(err) logger.error(err,data.ok);
+					if(err) return logger.error(err);
 					req.user = JSON.parse(data.res.text).member_info;
 					next();
 				});

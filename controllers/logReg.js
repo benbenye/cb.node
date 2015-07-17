@@ -8,7 +8,7 @@ var async = require('async');
 var funcHepler = require('../middlewares/funcHelper');
 function LogReg(){
 	/*登录请求 */
-	this.login = function(req, res){
+	this.login = function(req, res, next){
 		var username = req.body.username,
 			password = req.body.password,
 			form_token = req.body.form_token,
@@ -16,7 +16,11 @@ function LogReg(){
 			_url = 'member/login/username/'+username+'/password/'+password,
 			_next = req.query.next || '/';
 		request.get(config.API_YAOJIE+'member/getToken/id/'+form_token).end(function (err, data) {
-			if(data.ok && JSON.parse(data.res.text).errcode == 0){
+			if(err || !data.ok){
+				return next();
+			}else if(JSON.parse(data.res.text).flag == 2){
+				return res.send({status:0,info:'页面错误,请刷新后再试'});
+			}
 				request
 					.get(config.API_USER + _url)
 					.end(function(err, data){
@@ -42,11 +46,7 @@ function LogReg(){
 							}
 						}
 					});
-			}else{
-				res.send({status:0,info:'页面错误,请刷新后再试'});
-			}
-		})
-
+		});
 	};
 	/*退出*/
 	this.logout = function(req, res){
@@ -54,35 +54,34 @@ function LogReg(){
 		res.redirect('/');
 	};
 	/*登录页面*/
-	this.loginView = function(req, res){
+	this.loginView = function(req, res, next){
 		request.get(config.API_YAOJIE + 'member/FormToken').end(function (err, data) {
-			if(data.ok && JSON.parse(data.res.text).errcode == 0){
-				res.render(funcHepler.agent(req.headers['user-agent'])+'/views/public/login.html',{
-					title:'登陆页面',
-					public:config.PUBLIC,
-					ua:funcHepler.agent(req.headers['user-agent']),
-					form_token:JSON.parse(data.res.text).data.id,
-					login_url: req.originalUrl
-				})
-			}else{
-				logger.error(data);
-				res.redirect('/500');
+			if(err || !data.ok || JSON.parse(data.res.text).flag == 2){
+				return next();
 			}
+			res.render(funcHepler.agent(req.headers['user-agent'])+'/views/public/login.html',{
+				title:'登录春播',
+				public:config.PUBLIC,
+				ua:funcHepler.agent(req.headers['user-agent']),
+				form_token:JSON.parse(data.res.text).data.id,
+				login_url: req.originalUrl
+			});
 		});
 	};
 	/*手机号注册 gethtml*/
-	this.getRegister = function(req, res){
+	this.getRegister = function(req, res, next){
 		request.get(config.API_YAOJIE + 'member/FormToken').end(function (err, data) {
-			if(data.ok && JSON.parse(data.res.text).errcode == 0){
+			if(err || !data.ok){
+				return next();
+			}else if(JSON.parse(data.res.text).flag == 2){
+				return res.send({status:0,info:'页面错误,请刷新后再试'});
+			}
 				res.render(funcHepler.agent(req.headers['user-agent'])+'/views/public/register.html',{
-					title:'注册',
+					title:'注册春播',
 					ua:funcHepler.agent(req.headers['user-agent']),
 					public:config.PUBLIC,
 					form_token: JSON.parse(data.res.text).data.id
 				});
-			}else{
-				res.send({status:0,info:'页面错误,请刷新后再试'});
-			}
 		});
 	};
 	/*手机号注册 post*/
@@ -105,27 +104,21 @@ function LogReg(){
 			request
 				.get(config.API_YAOJIE + 'member/getVerifyApi/mobile/'+username)
 				.end(function (err, data) {
-					if(err){
+					if(err || !data.ok || JSON.parse(data.res.text).flag == 2) {
 						logger.error(err);
 						callback(err, '异常操作，请稍后重试');
 					}
-					if(data.ok && JSON.parse(data.res.text).errcode == 0){
 						var getVerify = JSON.parse(data.res.text).data;
 						if (verify.toLowerCase() != 'y123') {
 							if (getVerify != verify.toLowerCase()) {
-								callback(true, "验证码错误");
-								return;
+								return callback(true, "验证码错误");
 							}
 						}else {
 							if (getVerify != 'y123') {
-								callback(true, "验证码错误");
-								return;
+								return callback(true, "验证码错误");
 							}
 						}
 						callback(null, '');
-					}else{
-						callback(true, '异常操作，请稍后重试');
-					}
 				});
 		});
 		tasks.push(function (callback) {

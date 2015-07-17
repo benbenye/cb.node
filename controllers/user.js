@@ -185,7 +185,7 @@ function User(){
 				return;
 			}
 			res.render(funcHepler.agent(req.headers['user-agent']) + '/views/my/fav.html', {
-				title: '我的心愿单',
+				title: '我的心愿单-交易管理-春播',
 				data: result[0],
 				userInfo: req.user,
 				public: config.PUBLIC,
@@ -225,20 +225,20 @@ function User(){
 		});
 
 		async.parallel(tasks,function(err, result){
-			if(1){
-				//logger.error('我的积分-服务器异常');
-				//logger.error(err);
-				//res.status(500);
-				//res.render(funcHepler.agent(req.headers['user-agent'])+'/views/error.html',{
-				//	title:'服务器异常',
-				//	public: config.PUBLIC,
-				//	ua:funcHepler.agent(req.headers['user-agent'])
-				//});
-				//return;
-				return next(err);
+			if(err){
+				logger.error('我的积分-服务器异常');
+				logger.error(err);
+				res.status(500);
+				res.render(funcHepler.agent(req.headers['user-agent'])+'/views/error.html',{
+					title:'服务器异常',
+					public: config.PUBLIC,
+					ua:funcHepler.agent(req.headers['user-agent'])
+				});
+				return;
+				//return next(err);
 			}
 			res.render(funcHepler.agent(req.headers['user-agent']) + '/views/my/points.html', {
-					title: '我的积分',
+					title: '我的积分-账户中心-春播',
 					public: config.PUBLIC,
 					userInfo: req.user,
 					data: result[0].res.body,
@@ -253,7 +253,7 @@ function User(){
 	/* 个人信息 */
 	this.getMyInfo = function(req, res){
 		res.render(funcHepler.agent(req.headers['user-agent'])+'/views/my/myInfor.html',{
-			title:'个人信息',
+			title:'个人信息-账户中心-春播',
 			public: config.PUBLIC,
 			userInfo:req.user,
 			avatar_url:req.user.avatar_url.replace('.jpg','_120_120.jpg'),
@@ -288,7 +288,7 @@ function User(){
 				return;
 			}
 			res.render(funcHepler.agent(req.headers['user-agent'])+'/views/my/coupons.html',{
-				title: '我的春播券',
+				title: '我的春播券-账户中心-春播',
 				public: config.PUBLIC,
 				userInfo:req.user,
 				couponsObj: result[0].res.body,
@@ -338,7 +338,7 @@ function User(){
 				return;
 			}
 			res.render(funcHepler.agent(req.headers['user-agent'])+'/views/my/giftcards.html',{
-				title: '我的春播卡',
+				title: '我的春播卡-账户中心-春播',
 				public: config.PUBLIC,
 				userInfo:req.user,
 				pageSize: config.PAGE_SIZE,
@@ -376,7 +376,7 @@ function User(){
 					security = 2;
 				}
 				res.render(funcHepler.agent(req.headers['user-agent'])+'/views/my/security.html',{
-					title: '账户安全',
+					title: '账户安全-账户中心-春播',
 					userInfo:req.user,
 					public: config.PUBLIC,
 					security: security,
@@ -428,7 +428,7 @@ function User(){
 			return;
 			}
 			res.render(funcHepler.agent(req.headers['user-agent'])+'/views/my/balance.html',{
-				title: '我的余额',
+				title: '我的余额-账户中心-春播',
 				public: config.PUBLIC,
 				balanceObj: result[0].res.body,
 				userInfo:req.user,
@@ -518,7 +518,7 @@ function User(){
 				return;
 			}
 			res.render(funcHepler.agent(req.headers['user-agent'])+'/views/my/invitation.html',{
-				title: '分享基金',
+				title: '分享基金-账户中心-春播',
 				userInfo:req.user,
 				public: config.PUBLIC,
 				inviteStatus: JSON.parse(result[0].res.text).status,

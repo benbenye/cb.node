@@ -19,7 +19,7 @@
 			已取消
 			{% endif %}
 		</p>
-		{% if (data.orderStatus == 2 or data.orderStatus == 4 and data.logitics) %}
+		{% if (data.orderStatus == 2 or data.orderStatus == 4) %}
 		<table class="my_order_status">
 			<tr class="table_head">
 				<th colspan="3">订单跟踪</th>
@@ -32,7 +32,7 @@
 			</tr>
 			{% endfor %}
 			<tr>
-				<td colspan="3">承运人：{{ item.deliveryCompany }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;运单号：{{ item.wayBillNo }}</td>
+				<td colspan="3">承运人：{{ logitics.deliveryCompany }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;运单号：{{ logitics.wayBillNo }}</td>
 			</tr>
 		</table>
 		{% endif %}
@@ -73,13 +73,15 @@
 					<li class="item_price">¥{{ item.chunbo_price * item.skuNum }}</li>
 					{% if (item.has_lot == 1) %}
 					<li class="item_trace">
-						<a href="/OrderInfo/getInspection/skuId/0.html" onclick="return getInspection(this)">追踪检测情况</a></li>
+						<a href="/my/getInspection/skuId/{{ item.skuId }}/skuLot/{{ item.skuLotList[0].skuLot }}" onclick="return getInspection(this)">追踪检测情况</a></li>
 						{% endif %}
-						{% if (data.orderStatus == 4 and item.is_review == 0) %}
+						{% if (data.orderStatus == 4) %}
 						<li class="item_trace show_goods">
+							{% if (item.is_review == 0) %}
 								<a href="/index.php/OrderInfo/Review/" class="border_btn Review">晒单评价 赚积分</a><p class="return">
-								<else />
+							{% else %}
 								<a href="#" class="border_btn">待审核</a>
+							{% endif %}
 						</li>
 						{% endif %}
 					</ul>

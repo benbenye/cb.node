@@ -87,11 +87,11 @@ function Security(){
 			.end(function(err, data){
 				var payPwd_status = JSON.parse(data.res.text).flag;
 				res.render(funcHepler.agent(req.headers['user-agent'])+'/views/my/security_paypwd.html',{
-					title:payPwd_status == 1 ? '修改支付密码' : '设置支付密码',
+					title:payPwd_status == 1 ? '修改支付密码-账户中心-春播' : '设置支付密码-账户中心-春播',
 					ua:funcHepler.agent(req.headers['user-agent']),
 					public:config.PUBLIC,
 					userInfo:req.user,
-					isSet: payPwd_status == 1 ? false : true
+					isSet: payPwd_status != 1
 				});
 			})
 	};
@@ -251,7 +251,7 @@ function Security(){
 		request
 			.get(config.API_YAOJIE + 'member/sendSMS/mobile/'+mobile+'/type/'+type)
 			.end(function (err, data) {
-				if(!data.ok || JSON.parse(data.res.text).errcode != 0){
+				if(err || !data.ok || JSON.parse(data.res.text).flag != 1){
 					res.json({
 						status:0,
 						info:'发送失败'
@@ -269,109 +269,94 @@ function Security(){
 		var mobile = req.body.mobile,
 			rep_mobile = req.body.rep_mobile,
 			verify = req.body.verify,
-			info = '';
+			tasks = [];
+		tasks.push(function(info, callback){
+			request
+				.get(config.API_YAOJIE + 'member/getVerifyApi/mobile/'+mobile+'/type/2')
+				.end(function(err, data){
+					if(err || !data.ok){
+						return callback(true, {flag:0,info:'网络异常，请稍后重试'});
+					}else if(JSON.parse(data.res.text).flag == 2){
+						return callback(true, {flag:0,info:'请输入正确的验证码'});
+					}
+					callback(null, {info:''});
+				});
+		});
+		tasks.push(function(info, callback){
+			request
+				.get(config.API_USER + 'member/get/member_id/'+req.user.member_id)
+				.end(function(err, data){
+					if(err || !data.ok){
+						return callback(true, {flag:0,info:'网络异常，请稍后重试'});
+					}else if(JSON.parse(data.res.text).flag == 2){
+						return callback(true, {flag:0,info:'网络异常，请稍后重试'});
+					}
+					callback(null, {info:JSON.parse(data.res.text).member_info.login_id});
+				});
+		});
+		tasks.push(function (login_id, callback) {
+			request
+				.get(config.API_USER + 'member/ChangeMobile/login_id/'+login_id.info+'/mobile/'+mobile)
+				.end(function(err,data){
+					if(err || !data.ok){
+						return callback(true, {flag:0,info:'网络异常，请稍后重试'});
+					}else if(JSON.parse(data.res.text).flag == 2){
+						return callback(true, {flag:1,info:req.user.mobile?'修改绑定手机失败，此手机号已存在':'手机号绑定失败，此手机号已存在'});
+					}
+					callback(null,{info:''});
+				});
+		});
 		if(req.user.mobile){
-			if(checkData()){
-				res.json({
-					status:0,
-					info:checkData()
-				});
-			}else{
-				changeMobile();
-			}
+			tasks.unshift(function(callback){
+				if(!mobile) return callback(true,{flag:1,info:'请输入新手机号'});
+				if(!rep_mobile) return callback(true,{flag:1,info:'请再次输入手机号'});
+				if(!verify) return callback(true,{flag:1,info:'请输入验证码'});
+				if(mobile != rep_mobile) return callback(true,{flag:1,info:'两次输入的手机号不一致'});
+				if(mobile == req.user.mobile) return callback(true,{flag:1,info:'新手机号不可与旧手机号相同'});
+				if(!mobile.match(/1[34578]{1}\d{9}$/)) return callback(true,{flag:1,info:'请输入正确的手机号'});
+				callback(null,{info:''});
+			});
 		}else{
-			if(checkDataBind()){
-				res.json({
-					status:0,
-					info:checkDataBind()
-				});
+			tasks.unshift(function (callback) {
+				if(!mobile) return callback({flag:0,info:'请输入手机号'});
+				if(!verify) return callback({flag:0,info:'请输入验证码'});
+				if(!mobile.match(/1[34578]{1}\d{9}$/)) return callback({flag:0,info:'请输入正确的手机号'});
+				callback(null,{info:''});
+			})
+		}
+		async.waterfall(tasks, function (err, result) {
+			if(err){
+				res.json({status:0,info: result.info});
 			}else{
-				changeMobile();
+				res.json({status:1,info:req.user.mobile?'手机号修改成功':'手机号绑定成功',url:'/my/security'});
 			}
-		}
-		function checkData(){
-			if(!mobile) return '请输入新手机号';
-			if(!rep_mobile) return '请再次输入手机号';
-			if(!verify) return '请输入验证码';
-			if(mobile != rep_mobile) return '两次输入的手机号不一致';
-			if(mobile == req.user.mobile) return '新手机号不可与旧手机号相同';
-			if(!mobile.match(/1[34578]{1}\d{9}$/)) return '请输入正确的手机号';
-		}
-			function checkDataBind(){
-				if(!mobile) return '请输入手机号';
-				if(!verify) return '请输入验证码';
-				if(!mobile.match(/1[34578]{1}\d{9}$/)) return '请输入正确的手机号';
-			}
-			function changeMobile(){
-				async.waterfall([
-					function(callback){
-						request
-							.get(config.API_YAOJIE + 'member/getVerifyApi/mobile/'+mobile+'/type/2')
-							.end(function(err, data){
-								if(data.ok && JSON.parse(data.res.text).errcode == 0){
-									if(verify == JSON.parse(data.res.text).data){
-										callback(null);
-									}else{
-										callback({flag:1,mes:'请输入正确的验证码'});
-									}
-								}
-							});
-					},
-					function(callback){
-						request.get(config.API_USER + 'member/get/member_id/'+req.user.member_id).end(function(err, data){
-							if(data.ok){
-								callback(null, JSON.parse(data.res.text).member_info.login_id);
-							}else{
-								callback({flag:1,mes:'异常,稍后重试'});
-							}
-						})
-					},
-					function (login_id, callback) {
-						request.get(config.API_USER + 'member/ChangeMobile/login_id/'+login_id+'/mobile/'+mobile).end(function(err,data){
-							if(data.ok && JSON.parse(data.res.text).flag == 1){
-								callback(null);
-							}else if(JSON.parse(data.res.text).flag == 2){
-								callback({flag:1,mes:req.user.mobile?'修改绑定手机失败，此手机号已存在':'手机号绑定失败，此手机号已存在'});
-							}else{
-								callback({flag:1,mes:'异常,稍后重试'});
-							}
-						});
-					}
-				], function (err, result) {
-					if(err){
-						res.json({status:0,info:err.mes});
-					}else{
-						res.json({status:1,info:req.user.mobile?'手机号修改成功':'手机号绑定成功',url:'/my/security'});
-					}
-				});
-			}
+		});
 	};
 	/*更改绑定邮箱*/
 	this.getChangeEmail = function (req, res) {
 		request
 			.get(config.API_YAOJIE + 'member/sendActiveEmail/email/'+req.user.email+'/member_id/'+req.user.member_id+'/isValidate/1')
 			.end(function (err, data) {
-				if(data.ok && JSON.parse(data.res.text).errcode == 0){
-					res.render(funcHepler.agent(req.headers['user-agent']) + '/views/my/email.html', {
-						title:'更改绑定邮箱',
-						ua: funcHepler.agent(req.headers['user-agent']),
-						public: config.PUBLIC,
-						type:'change'
-					})
-				}else{
-					res.render(funcHelper.agent(req.headers['user-agent']) + '/views/error.html', {
+				if(err || !data.ok){
+					return res.render(funcHelper.agent(req.headers['user-agent']) + '/views/error.html', {
 						message: '网络异常，请稍后重试',
 						error: {},
 						goto:{href:'/',name:'回到首页'},
 						public: config.PUBLIC
 					});
 				}
+				res.render(funcHepler.agent(req.headers['user-agent']) + '/views/my/email.html', {
+					title:'更改绑定邮箱-账户中心-春播',
+					ua: funcHepler.agent(req.headers['user-agent']),
+					public: config.PUBLIC,
+					type:'change'
+				});
 			});
 	};
 	/*绑定邮箱 页面*/
 	this.getBindEmail = function (req, res) {
 		res.render(funcHepler.agent(req.headers['user-agent']) + '/views/my/email.html', {
-			title:'绑定邮箱',
+			title:'绑定邮箱-账户中心-春播',
 			ua: funcHepler.agent(req.headers['user-agent']),
 			public: config.PUBLIC,
 			type:'bind'
@@ -413,14 +398,20 @@ function Security(){
 		request
 			.get(config.API_YAOJIE + 'member/validateEmailApi/verify/'+verify+'/isValidate/1')
 			.end(function (err, data) {
-				if(data.ok && JSON.parse(data.res.text).errcode == 0){
-					res.render(funcHepler.agent(req.headers['user-agent']) + '/views/my/email.html',{
-						title:'填写新的邮箱',
-						public:config.PUBLIC,
-						ua:funcHepler.agent(req.headers['user-agent']),
-						type:'verify'
+				if(err || !data.ok){
+					return res.render(funcHelper.agent(req.headers['user-agent']) + '/views/error.html', {
+						message: '网络异常，请稍后重试',
+						error: {},
+						goto:{href:'/',name:'回到首页'},
+						public: config.PUBLIC
 					});
 				}
+				res.render(funcHepler.agent(req.headers['user-agent']) + '/views/my/email.html',{
+					title:'填写新的邮箱-账户中心-春播',
+					public:config.PUBLIC,
+					ua:funcHepler.agent(req.headers['user-agent']),
+					type:'verify'
+				});
 			});
 	};
 	/*验证绑定*/
@@ -464,12 +455,10 @@ function Security(){
 		request
 			.get(config.API_YAOJIE + _url)
 			.end(function (err, data) {
-				console.log('s',	data.res);
-				if(data.ok && JSON.parse(data.res.text).errcode == 0){
-					res.json({status:1, info:'验证邮件已发送到您的邮箱'});
-				}else{
-					res.json({status:0, info:'发送邮件失败'});
+				if(err || !data.ok){
+					return res.json({status:0, info:'发送邮件失败'});
 				}
+				res.json({status:1, info:'验证邮件已发送到您的邮箱'});
 			});
 	};
 }
